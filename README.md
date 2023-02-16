@@ -1,2 +1,2 @@
-# Image_Classification_server
-Backend for the image classification project 
+# Server_image_classification_Production
+Server_image_classification
