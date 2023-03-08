@@ -94,7 +94,7 @@ const userModel = new mongoose.model("User", userSchema);
 ================================================*/
 app.get("/", async(req, res) => {
     const userData = await userModel.find({})
-  res.send(userData);
+  res.json(userData);
 });
 
 app.post("/signup", (req, res) => {
@@ -131,12 +131,12 @@ app.post("/signup", (req, res) => {
         });
   
         const registered = await user.save();
-        res.send({ message: "Registation Successfull! Login again..." , error : false});
+        res.json({ message: "Registation Successfull! Login again..." , error : false});
       }
     });
   }
   catch(err){
-    res.send({message : err , error : true})
+    res.json({message : err , error : true})
   }
 });
 
@@ -149,16 +149,16 @@ app.post("/signin", (req, res) => {
         console.log(password);
         console.log(user.password);
         if (password === user.password) {
-          res.send({ message: ` Login successfull`, user });
+          res.json({ message: ` Login successfull`, user });
         } else {
-          res.send({ message: "Check your password" });
+          res.json({ message: "Check your password" });
         }
       } else {
-        res.send({ message: `This email id is not Registered` });
+        res.json({ message: `This email id is not Registered` });
       }
     });
   } catch (err) {
-    console.log(err);
+    res.json({message : err})
   }
 });
 
