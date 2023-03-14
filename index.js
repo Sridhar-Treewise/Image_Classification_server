@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv").config();
 
 const app = express();
-app.use(express.json());
+app.use(express.json({limit : "20mb"}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 console.log(process.env.USERNAME_MONGODB);
@@ -85,7 +85,7 @@ const userSchema = new mongoose.Schema({
     lubrication_regulation: String,
     cylinder_numbers: String,
   },
-  cylinderDetails : [{}]
+  cylinderDetails : [Object]
 });
 const userModel = new mongoose.model("User", userSchema);
 
@@ -166,6 +166,17 @@ app.post("/updateData", (req, res) => {
   console.log(req.body);
 });
 
+
+app.post("/savePredictionData",async(req,res)=>{
+   const result = await userModel.updateOne({ _id : req.body.user._id}, { "$push" : { cylinderDetails : req.body.predictionInfo }})
+   res.send({message : "Data Insert Done", success : true})  
+})
+
+app.post("/updateInfo",async(req,res)=>{
+  console.log(req.body)
+  const result = await userModel.updateOne({_id :req.body._id}, { $set : {"info.inspection_date" : req.body.inspection_date}})
+  res.send({message : "signin date and time updated", success : true})
+})
 /*===============================================
             listen the port
 ================================================*/
