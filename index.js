@@ -92,16 +92,16 @@ app.get("/", async(req, res) => {
   res.json(userData);
 });
  
-app.post("/signup", async (req, res) => {
+app.post("/signup", (req, res) => {
   console.log(req.body);
   try {
-    const fetchData = await userModel.findOne({ email: req.body.email },
+    userModel.findOne({ email: req.body.email },
       async (err, user) => {
         if (user) {
           if (req.body.password === user.password) {
-            res.send({ message: "This User is already registered" });
+            res.send({ message: "This User is already registered" ,error: false,});
           } else {
-            res.send({ message: "Check your Password" });
+            res.send({ message: "Check your Password", error: false, });
           }
         } else {
           const user = new userModel({
