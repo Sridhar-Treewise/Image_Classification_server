@@ -68,7 +68,7 @@ const userSchema = new mongoose.Schema({
   info: {
     company_name: String,
     vessel_name: String,
-    hull_number: String,
+    imo_number: String,
     manufacturer: String,
     type_of_engine : String,
     vessel_type: String,
