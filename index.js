@@ -24,6 +24,7 @@ mongoose
     console.log(err);
   });
 
+//not use
 const cylinderSchema = new mongoose.Schema({
   lubrication: {
     ring1: String,
@@ -51,8 +52,6 @@ const cylinderSchema = new mongoose.Schema({
   },
   image: String,
   remark: String,
-  date: Date,
-  alert: Boolean,
 });
 
 const userSchema = new mongoose.Schema({
