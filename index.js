@@ -69,7 +69,8 @@ const userSchema = new mongoose.Schema({
     company_name: String,
     vessel_name: String,
     hull_number: String,
-    manufacturer_and_type_of_engine: String,
+    manufacturer: String,
+    type_of_engine : String,
     vessel_type: String,
     inspection_date: String,
     total_running_hours: String,
@@ -77,7 +78,6 @@ const userSchema = new mongoose.Schema({
     cyl_oil_Type: String,
     cyl_oil_consump_Ltr_24hr: String,
     normal_service_load_in_percent_MCR: String,
-    lubrication_regulation: String,
     cylinder_numbers: String,
   },
   cylinderDetails: [Object],
@@ -112,9 +112,9 @@ app.post("/signup", (req, res) => {
             info: {
               company_name: req.body.company_name,
               vessel_name: req.body.vessel_name,
-              hull_number: req.body.hull_number,
-              manufacturer_and_type_of_engine:
-                req.body.manufacturer_and_type_of_engine,
+              imo_number: req.body.imo_number,
+              manufacturer:req.body.manufacturer,
+              type_of_engine : req.body.type_of_engine,
               vessel_type: req.body.vessel_type,
               inspection_date: req.body.inspection_date,
               total_running_hours: req.body.total_running_hours,
@@ -122,8 +122,7 @@ app.post("/signup", (req, res) => {
               cyl_oil_Type: req.body.cyl_oil_Type,
               cyl_oil_consump_Ltr_24hr: req.body.cyl_oil_consump_Ltr_24hr,
               normal_service_load_in_percent_MCR:
-                req.body.normal_service_load_in_percent_MCR,
-              lubrication_regulation: req.body.lubrication_regulation,
+              req.body.normal_service_load_in_percent_MCR,
               cylinder_numbers: req.body.cylinder_numbers,
             },
           });
@@ -152,9 +151,9 @@ app.post("/signin",async(req, res) => {
         } else {
           res.json({ message: "Check your password", success: false });
         }
-      } else {
+      } else { 
         res.json({ message: `This email id is not Registered` });
-      }
+      } 
     });
 
   } catch (err) {
@@ -176,8 +175,9 @@ app.post("/savePredictionData", async (req, res) => {
 
 app.post("/updateInfo", async (req, res) => {
   console.log(req.body);
-  userModel.updateOne({ _id: req.body._id },{ "$set": { ...req.body } }
-  );
+ const result =  await userModel.updateOne({ _id: req.body._id },{ $set: { info : req.body }});
+  console.log(result)
+  res.send({message : "Updated Successfully" })
 });
 
 app.post("/getReports", async (req, res) => {
