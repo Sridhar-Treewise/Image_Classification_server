@@ -2,7 +2,7 @@ post http://localhost:8080/api/auth/signIn
 Content-Type:  application/json
 
 {
-    "email" : "sridhar@test.com",
+    "email" : "Ashin@test.com",
     "password" : "1234"
 }
 
@@ -11,10 +11,10 @@ post http://localhost:8080/api/auth/signUp
 Content-Type:  application/json
 
 {
-    "email" : "RadhaKrish@test.com",
+    "email" : "Ashin@test.com",
     "password" : "1234"
 }
 
 ###
 http://localhost:8080/api/service/profileDetails
-Authorization: zI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDMwMDVjN2FhZDJjMDZhM2ZlNWIwYzYiLCJlbWFpbCI6IlJhZGhhS3Jpc2hAdGVzdC5jb20iLCJpYXQiOjE2ODA4Njg4MDcsImV4cCI6MTY4MDg3NjAwN30.LZZLmC7FXZ8CJOReU4Fsd5lACOoc9EaZE27NjWLBufA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDMwMGZiMWNjMzJjMWQwNTUwZWQ1ZjYiLCJlbWFpbCI6IkFzaGluQHRlc3QuY29tIiwiaWF0IjoxNjgwODcxNTE4LCJleHAiOjE2ODA4Nzg3MTh9.o0wlhajGAk52VZBJ2n2SrthXy7EaRb2fcsFEBLdZ-lQ

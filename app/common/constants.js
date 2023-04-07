@@ -8,8 +8,8 @@ export const USER_TYPE = {
 export const ERROR_MSG = {
     ALREADY_EXISTS: "User already exists, please try different email",
     PROFILE_NOT: "Profile not created, try again",
-    SOMETHING_WENT: "Something Went Wrong"
-
+    SOMETHING_WENT: "Something Went Wrong",
+    USER_NOT: "User not found"
 };
 
 export const SUBSCRIPTION_MODEL = {

@@ -1,5 +1,5 @@
 import express from "express";
-import JoiValidator from 'express-joi-validation'
+import JoiValidator from "express-joi-validation"
 import { signIn, signUp } from "../../controllers/auth/authController.js";
 import { loginSchema } from "../../utils/validators.js";
 

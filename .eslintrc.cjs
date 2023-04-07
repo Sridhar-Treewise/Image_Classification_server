@@ -1,3 +1,4 @@
+/* eslint-disable quote-props */
 module.exports = {
   env: {
     browser: true,
@@ -101,7 +102,6 @@ module.exports = {
     ], // enforces spacing between keys and values in object literal properties
     "no-inline-comments": 0, // disallow comments inline after code (off by default)
     // "no-lonely-if": 2, // disallow if as the only statement in an else block (off by default)
-    "no-mixed-spaces-and-tabs": 2, // disallow mixed spaces and tabs for indentation
     "no-multiple-empty-lines": [
       2,
       {
@@ -110,7 +110,7 @@ module.exports = {
     ], // disallow multiple empty lines (off by default)
     "no-spaced-func": 2, // disallow space between function identifier and application
     "no-trailing-spaces": 2, // disallow trailing whitespace at the end of lines
-    "quotes": [
+    quotes: [
       2,
       "double"
     ], // specify whether double or single quotes should be used
