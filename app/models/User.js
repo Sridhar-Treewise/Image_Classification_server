@@ -1,3 +1,5 @@
+/* eslint-disable new-cap */
+/* eslint-disable indent */
 import mongoose from "mongoose";
 import { SUBSCRIPTION_MODEL } from "../common/constants.js";
 const userSchema = new mongoose.Schema({
@@ -5,7 +7,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         index: true,
         unique: true,
-        trim: true,
+        trim: true
     },
     password: { type: String, unique: true },
     status: { type: Boolean, default: true, require: true },
@@ -31,9 +33,9 @@ const userSchema = new mongoose.Schema({
         cyl_oil_Type: String,
         cyl_oil_consump_Ltr_24hr: String,
         normal_service_load_in_percent_MCR: String,
-        cylinder_numbers: String,
+        cylinder_numbers: String
     },
-    cylinderDetails: [Object],
+    cylinderDetails: [Object]
 });
 const User = new mongoose.model("User", userSchema);
 
