@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/User.js";
 import _ from "lodash";
-import { ERROR_MSG } from "../../common/constants.js";
+import { ERROR_MSG } from "../../../common/constants.js";
 
 
 export const signIn = async (req, res) => {

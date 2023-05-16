@@ -1,5 +1,6 @@
+
 import _ from "lodash";
-import { ERROR_MSG } from "../../common/constants.js";
+import { ERROR_MSG } from "../../../common/constants.js";
 import User from "../../models/User.js";
 
 export const updateProfile = async (req, res) => {
@@ -22,10 +23,9 @@ export const savePredictionData = async (req, res) => {
         const result = await userModel
             .updateOne({ _id: user._id }, { $push: { cylinderDetails: predictionInfo } });
         if (!result) return res.status(400).send("Data did not saved");
-        res.status(201).json(result);
+        res.status(201).json(result)
 
     } catch (error) {
-        console.log("error", error)
         res.status(500).send(`${ERROR_MSG.SOMETHING_WENT} \n ${error.message}`)
 
     }

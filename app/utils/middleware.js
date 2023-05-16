@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import User from "../v1/models/User.js";
 import { ERROR_MSG } from "../common/constants.js";
 const config = process.env;
 

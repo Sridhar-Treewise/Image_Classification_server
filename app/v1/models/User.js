@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable indent */
 import mongoose from "mongoose";
-import { SUBSCRIPTION_MODEL } from "../common/constants.js";
+import { SUBSCRIPTION_MODEL } from "../../common/constants.js";
 const userSchema = new mongoose.Schema({
     email: {
         type: String,

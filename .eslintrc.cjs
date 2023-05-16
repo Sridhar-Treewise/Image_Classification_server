@@ -1,9 +1,5 @@
 /* eslint-disable quote-props */
 module.exports = {
-  env: {
-    browser: true,
-    es2021: true
-  },
   extends: "standard",
   overrides: [
   ],
@@ -78,7 +74,7 @@ module.exports = {
     "no-use-before-define": 2, // disallow use of variables before they are defined
     // Stylistic Issues
     "eol-last": 1, // enforce newline at the end of file, with no multiple empty lines
-    // "indent": [1, 2], // this option sets a specific tab width for your code (off by default)
+    "indent": [1, 2], // this option sets a specific tab width for your code (off by default)
     "brace-style": 2,
     "camelcase": 2, // require camel case names
     "comma-spacing": [

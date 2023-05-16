@@ -12,6 +12,11 @@ export const ERROR_MSG = {
     USER_NOT: "User not found"
 };
 
+export const SUCCESS_MESSAGE = {
+    CREATED: "Created Successfully",
+    UPDATED: "Updated Successfully"
+};
+
 export const SUBSCRIPTION_MODEL = {
     BASIC: "BASIC",
     STANDARD: "STANDARD",

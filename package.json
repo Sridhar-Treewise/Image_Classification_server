@@ -6,8 +6,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npm i && nodemon index.js",
-    "prod": "npm i && node index.js"
+    "dev": "npm i && NODE_ENV=development nodemon index.js",
+    "prod": "npm i && NODE_ENV=production node index.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^6.6.5",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "nodemon": "^2.0.20"
   },
   "devDependencies": {
