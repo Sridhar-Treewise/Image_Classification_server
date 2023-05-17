@@ -2,8 +2,9 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Auth from "../../models/Auth.js";
 import User from "../../models/User.js";
-import _ from "lodash"
-import { ERROR_MSG, USER_TYPE } from "../../common/constants.js";
+import _ from "lodash";
+import { ERROR_MSG } from "../../../config/messages.js";
+import { USER_TYPE } from "../../../common/constants.js";
 
 export const createOrg = async (req, res) => {
     const { email, password, vessel_name } = req.body;

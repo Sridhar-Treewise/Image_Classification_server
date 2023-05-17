@@ -44,7 +44,7 @@ app.use(express.urlencoded({ extended: false }));
 
 
 // Routes
-app.use("/api", router);
+app.use("/api/v1", router);
 
 // Error handler
 app.use(function (req, res, next) {

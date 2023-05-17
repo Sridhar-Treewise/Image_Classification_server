@@ -6,6 +6,6 @@ const router = express.Router();
 
 // API routes
 router.use("/auth", authRoutes);
-router.use("/v1", serviceRoutes);
+router.use("/services", serviceRoutes);
 
 export default router;

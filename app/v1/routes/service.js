@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/updateData", updateProfile);
 router.post("/savePredictionData", savePredictionData);
 router.get("/profileDetails", verifyToken, getProfileDetails);
-router.get("/getReports", getReports);
+router.get("/get-reports", getReports);
 
 //  admin services
 router.use("/admin", adminRoutes);

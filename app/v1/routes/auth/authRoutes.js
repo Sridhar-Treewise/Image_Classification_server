@@ -1,12 +1,10 @@
 import express from "express";
-import JoiValidator from "express-joi-validation";
 import { signIn, signUp } from "../../controllers/auth/authController.js";
-import { loginSchema } from "../../../utils/validators.js";
+import { loginValidator, registerValidator } from "../../validation/index.js";
 
-const validator = JoiValidator.createValidator({});
 const router = express.Router();
 
-router.post("/signUp", signUp);
-router.post("/signIn", validator.body(loginSchema), signIn);
+router.post("/signUp", registerValidator, signUp);
+router.post("/signIn", loginValidator, signIn);
 
 export default router;

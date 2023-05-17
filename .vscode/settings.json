@@ -1,4 +1,4 @@
 {
     "html.autoClosingTags": false,
-    "editor.renderIndentGuides": false,
+    "editor.defaultFormatter": null
 }

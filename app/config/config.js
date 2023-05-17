@@ -13,3 +13,4 @@ const database = {
 };
 
 export { database };
+

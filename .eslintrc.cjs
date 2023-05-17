@@ -66,15 +66,11 @@ module.exports = {
       2,
       "after"
     ], // enforce the spacing around the * in generator functions (off by default)
-    "radix": [
-      "error",
-      "as-needed"
-    ], // require use of the second argument for parseInt() (off by default)
     "no-shadow": 2, // disallow declaration of variables already declared in the outer scope
     "no-use-before-define": 2, // disallow use of variables before they are defined
     // Stylistic Issues
     "eol-last": 1, // enforce newline at the end of file, with no multiple empty lines
-    "indent": [1, 2], // this option sets a specific tab width for your code (off by default)
+    "indent": ["error", 4], // this option sets a specific tab width for your code (off by default)
     "brace-style": 2,
     "camelcase": 2, // require camel case names
     "comma-spacing": [
