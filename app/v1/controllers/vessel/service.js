@@ -29,7 +29,7 @@ export const savePredictionData = async (req, res) => {
 };
 
 export const getProfileDetails = async (req, res) => {
-    const id = req.user;
+    const id = req.user || "";
     try {
         const result = await User.findOne({ userId: id });
         const profileDetail = _.cloneDeep(result);

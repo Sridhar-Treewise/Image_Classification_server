@@ -1,4 +1,7 @@
 {
     "html.autoClosingTags": false,
-    "editor.defaultFormatter": null
+    "editor.defaultFormatter": null,
+    "cSpell.words": [
+        "Consump"
+    ]
 }

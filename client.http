@@ -2,12 +2,12 @@ post http://localhost:8000/api/v1/auth/signIn
 Content-Type:  application/json
 
 {
-    "email" : "ss",
-    "password" : "ssss"
+    "email" : "ajmal@test.com",
+    "password" : "1234"
 }
 
 ###
-post http://localhost:8080/api/auth/signUp
+post http://localhost:8000/api/v1/auth/signUp
 Content-Type:  application/json
 
 {
@@ -16,5 +16,5 @@ Content-Type:  application/json
 }
 
 ###
-http://localhost:8080/api/service/profileDetails
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDMwMGZiMWNjMzJjMWQwNTUwZWQ1ZjYiLCJlbWFpbCI6IkFzaGluQHRlc3QuY29tIiwiaWF0IjoxNjgwODcxNTE4LCJleHAiOjE2ODA4Nzg3MTh9.o0wlhajGAk52VZBJ2n2SrthXy7EaRb2fcsFEBLdZ-lQ
+http://localhost:8000/api/v1/services/profile-details
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDMwMGZiMWNjMzJjMWQwNTUwZWQ1ZjYiLCJlbWFpbCI6IkFzaGluQHRlc3QuY29tIiwiaWF0IjoxNjg0MzE5OTIzLCJleHAiOjE2ODQzMjcxMjN9.vE12To8ZHJHqepxuveK4B23grbbaaNtZxHuZ12FJ5qs

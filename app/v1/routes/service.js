@@ -9,13 +9,13 @@ const router = express.Router();
 //  Vessel services
 router.post("/updateData", updateProfile);
 router.post("/savePredictionData", savePredictionData);
-router.get("/profileDetails", verifyToken, getProfileDetails);
+router.get("/profile-details", verifyToken, getProfileDetails);
 router.get("/get-reports", getReports);
 
 //  admin services
 router.use("/admin", adminRoutes);
 
 //  org services
-router.use("organization", orgRoutes);
+router.use("/organization", orgRoutes);
 
 export default router;

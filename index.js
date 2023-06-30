@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable indent */
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
@@ -11,6 +11,9 @@ import databaseConfig from "./app/config/database.js";
 
 const app = express();
 const environment = process.env.NODE_ENV || "development";
+// TODO add compression
+// TODO block XSS
+// Caching
 
 const envFile = `.env.${environment}`;
 dotenv.config({ path: envFile });
@@ -73,7 +76,7 @@ mongoose
   .catch((err) => {
     console.log(`Error connecting database \n ${err.message}`);
   });
-
+export { app };
 // not use
 const cylinderSchema = new mongoose.Schema({
   lubrication: {

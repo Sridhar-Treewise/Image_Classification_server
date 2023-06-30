@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha app/v1/tests/**/*.js",
     "dev": "npm i && NODE_ENV=development nodemon index.js",
     "prod": "npm i && NODE_ENV=production node index.js"
   },
@@ -36,10 +36,13 @@
     "nodemon": "^2.0.20"
   },
   "devDependencies": {
+    "chai": "^4.3.7",
     "eslint": "^8.37.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.7.0",
-    "eslint-plugin-promise": "^6.1.1"
+    "eslint-plugin-promise": "^6.1.1",
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   }
 }

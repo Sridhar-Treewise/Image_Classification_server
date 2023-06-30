@@ -9,10 +9,10 @@ export const signIn = async (req, res) => {
     const { email, password } = req.body;
     try {
         const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ message: "Invalid Credential" });
+        if (!user) return res.status(401).json({ message: "Invalid Credential" });
         const id = user._id.toString();
         const isPassword = await bcrypt.compare(password, user.password);
-        if (!isPassword) return res.status(403).json({ messages: "Invalid Credential" });
+        if (!isPassword) return res.status(401).json({ messages: "Invalid Credential" });
         const token = jwt.sign({ userId: id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
         res.status(200).json({ token });
     } catch (error) {
