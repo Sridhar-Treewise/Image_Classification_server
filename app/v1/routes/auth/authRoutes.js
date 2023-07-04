@@ -1,10 +1,11 @@
 import express from "express";
-import { signIn, signUp } from "../../controllers/auth/authController.js";
-import { loginValidator, registerValidator } from "../../validation/index.js";
+import { getAdmins, signIn, signUp } from "../../controllers/auth/authController.js";
+import { signInValidate, signUpValidate, validateDomain } from "../../validation/AuthValidator.js";
 
 const router = express.Router();
 
-router.post("/signUp", registerValidator, signUp);
-router.post("/signIn", loginValidator, signIn);
+router.post("/sign-in", signInValidate, signIn);
+router.post("/sign-up", signUpValidate, signUp);
+router.post("/org-admins", validateDomain, getAdmins);
 
 export default router;

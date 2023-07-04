@@ -1,19 +1,24 @@
+/* eslint-disable no-console */
 /* eslint-disable indent */
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import logger from "morgan";
-import createError from "http-errors";
-// import multer from "multer";
 import router from "./app/config/routes.js";
 import databaseConfig from "./app/config/database.js";
+import { ERROR_MSG } from "./app/config/messages.js";
+import { adminRegister } from "./app/v1/controllers/auth/authController.js";
 
 const app = express();
 const environment = process.env.NODE_ENV || "development";
-// TODO add compression
-// TODO block XSS
+// TODO ++++++++++++++++++++++++++++++
+// add compression
+// block XSS
 // Caching
+// validate, body, query, params
+// success failed operation
+// do proper planning
 
 const envFile = `.env.${environment}`;
 dotenv.config({ path: envFile });
@@ -26,43 +31,32 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "uploads/");
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, file.originalname);
-//   }
-// });
-// const upload = multer({ storage });
-// app.post("/upload-profile-image", (req, res) => {
-//   console.log("here")
-//   try {
-//     console.log(req.file);
-//     res.status(200).json({ message: "successful" });
-//   } catch (err) {
-//     console.log("err", err);
-//   }
-// });
-
 
 // Routes
 app.use("/api/v1", router);
 
+if (environment === "development") {
+  app.post("/create", adminRegister);
+}
+
 // Error handler
-app.use(function (req, res, next) {
-  next(createError(404));
-});
+const errorHandler = (err, req, res, next) => {
+  res.status(400); // Bad Request
+  console.log(err);
+  res.json({ errorTitle: "Bad Request", message: err.message || ERROR_MSG.ERROR_OCCURRED });
+  next();
+};
 
-app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+// Routes not found middleware
+const notFoundHandler = (req, res, next) => {
+  res.status(404);
+  res.json({ message: "Requested Resource not found." });
+  next();
+};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.json({ message: err.message });
-});
+// Register the error handling middleware and not found middleware
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 mongoose
   .connect(uri, options)
@@ -70,7 +64,7 @@ mongoose
     console.log("DB Connected");
     app.listen(PORT, () => {
       const env = process.env.NODE_ENV;
-      console.log(`Server is running in ${env} mode at ${PORT}`);
+      console.log(`app is running in ${env} mode at ${PORT}`);
     });
   })
   .catch((err) => {
@@ -78,53 +72,32 @@ mongoose
   });
 export { app };
 // not use
-const cylinderSchema = new mongoose.Schema({
-  lubrication: {
-    ring1: String,
-    ring2: String,
-    ring3: String,
-    ring4: String
-  },
-  surface: {
-    ring1: String,
-    ring2: String,
-    ring3: String,
-    ring4: String
-  },
-  deposit: {
-    ring1: String,
-    ring2: String,
-    ring3: String,
-    ring4: String
-  },
-  breakage: {
-    ring1: String,
-    ring2: String,
-    ring3: String,
-    ring4: String
-  },
-  image: String,
-  remark: String
-});
-
-
-// TODO Update only info object
-// app.post("/updateInfo", async (req, res) => {
-//   console.log(req.body);
-//   const result = await userModel.updateOne({ _id: req.body._id }, { $set: { info: req.body } });
-//   console.log(result)
-//   res.send({ message: "Updated Successfully" })
+// const cylinderSchema = new mongoose.Schema({
+//   lubrication: {
+//     ring1: String,
+//     ring2: String,
+//     ring3: String,
+//     ring4: String
+//   },
+//   surface: {
+//     ring1: String,
+//     ring2: String,
+//     ring3: String,
+//     ring4: String
+//   },
+//   deposit: {
+//     ring1: String,
+//     ring2: String,
+//     ring3: String,
+//     ring4: String
+//   },
+//   breakage: {
+//     ring1: String,
+//     ring2: String,
+//     ring3: String,
+//     ring4: String
+//   },
+//   image: String,
+//   remark: String
 // });
 
-// app.post("/getReports", async (req, res) => {
-//   console.log(req.body);
-//   const result = await userModel.findOne({ _id: req.body._id }, (err, dataResult) => {
-//     console.log(dataResult);
-//     res.send({
-//       message: "Reports",
-//       data: dataResult.cylinderDetails,
-//       success: true,
-//     });
-//   }
-//   );
-// });

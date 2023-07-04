@@ -14,5 +14,6 @@ export const DESIGNATION = [
 ];
 export const ERROR_CODE = {
     INVALID_TOKEN: 9401,
-    TOKEN_REQUIRED: 9402
+    TOKEN_REQUIRED: 9402,
+    JWT_TOKEN_EXPIRED: 9000
 };

@@ -3,6 +3,10 @@
 import mongoose from "mongoose";
 import { DESIGNATION, SUBSCRIPTION_MODEL, USER_TYPE } from "../../common/constants.js";
 const userSchema = new mongoose.Schema({
+    fullName: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         index: true,
@@ -17,28 +21,31 @@ const userSchema = new mongoose.Schema({
         enums: USER_TYPE,
         default: USER_TYPE[0]
     },
-    mobile: String,
-    vesselDetails: {
-        vesselName: String,
-        imoNumber: Number,
-        manufacturer: String,
-        engineType: String,
-        vesselType: String
-    },
-    inspectionDetails: {
-        inspectionDate: Number,
-        serviceLoadMCR: String,
-        totalRunningHours: String,
-        lastRunningHours: String,
-        cylinderOilType: String,
-        cylinderOilConsump: String,
-        serviceLoad: String,
-        cylinderNumber: String
-    },
-    organizationBelongsTo: {
+    vesselName: {
         type: String,
         default: "",
-        required: true
+        index: true,
+        unique: true
+    },
+    vesselDetails: {
+        imoNumber: { type: Number, default: "" },
+        manufacturer: { type: String, default: "" },
+        engineType: { type: String, default: "" },
+        vesselType: { type: String, default: "" }
+    },
+    inspectionDetails: {
+        inspectionDate: { type: Date, default: "" },
+        serviceLoadMCR: { type: String, default: "" },
+        totalRunningHours: { type: String, default: "" },
+        lastRunningHours: { type: String, default: "" },
+        cylinderOilType: { type: String, default: "" },
+        cylinderOilConsump: { type: String, default: "" },
+        serviceLoad: { type: String, default: "" },
+        cylinderNumber: { type: String, default: "" }
+    },
+    organizationBelongsTo: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Organizations"
     },
     designation: {
         type: String,

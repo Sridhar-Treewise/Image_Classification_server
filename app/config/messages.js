@@ -1,8 +1,16 @@
 export const ERROR_MSG = {
-    ALREADY_EXISTS: "User already exists, please try different email",
+    ALREADY_EXISTS: "Email already exists, please try different email",
     PROFILE_NOT: "Profile not created, try again",
     SOMETHING_WENT: "Something Went Wrong",
-    USER_NOT: "User not found"
+    USER_NOT: "User not found",
+    ORG_ADMIN_NOT: "Organization Admin field required for registering",
+    ADMIN_USER_ALREADY: "Admin already exists",
+    ADMINS_NOT_EXISTS: "For given domain administrator not exists",
+    NO_DETAILS: "No details found",
+    ALREADY_EXISTS_VESSEL: "Vessel Name already exists, Contact support Team",
+    ERROR_OCCURRED: "An error has occurred",
+    NOT_ALLOWED: "Not Allowed"
+
 };
 
 

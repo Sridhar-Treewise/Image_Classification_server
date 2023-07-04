@@ -7,6 +7,6 @@ const cylinderSchema = new mongoose.Schema({
     },
 
 });
-const User = new mongoose.model("Cylinder", cylinderSchema);
+const User = mongoose.model("Cylinder", cylinderSchema);
 
 export default User;
