@@ -46,7 +46,7 @@ export const getCylinderDetails = async (req, res) => {
         const result = await User.findOne({ _id: id });
         if (!result) return res.status(404).send("No details found");
         const { cylinder_numbers = 0, cylinderDetails = [], info } = result;
-        res.status(200).json({ cylinderNumbers: cylinder_numbers, cylinderDetails, info });
+        res.status(200).json({ cylinder_numberss: cylinder_numbers, cylinderDetails, info });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }

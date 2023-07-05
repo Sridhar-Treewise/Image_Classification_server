@@ -64,7 +64,7 @@ mongoose
     console.log("DB Connected");
     app.listen(PORT, () => {
       const env = process.env.NODE_ENV;
-      console.log(`app is running in ${env} mode at ${PORT}`);
+      console.log(`app running in ${env} mode at ${PORT}`);
     });
   })
   .catch((err) => {

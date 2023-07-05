@@ -48,11 +48,11 @@ export const signUpSchema = Joi.object({
     // .custom(customDomainValidator, "The email domain Not allowed")
     email: Joi.string().email().min(1).required(),
     fullName: Joi.string().min(1).required(),
-    vesselName: Joi.string().min(1).required(),
+    vessel_name: Joi.string().min(1).required(),
     password: Joi.string().min(2).required(),
     confirmPassword: Joi.string().min(2).required(),
     userType: Joi.string().min(2).required(),
-    imoNumber: Joi.string().min(2).required(),
+    imo_number: Joi.string().min(2).required(),
     organizationAdmin: Joi.string().allow("").when("userType", {
         is: "Organization",
         then: Joi.string().required(),

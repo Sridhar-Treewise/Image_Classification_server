@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 
 const organizationSchema = new mongoose.Schema({
+    company_name: {
+        type: String
+    },
     domain: {
         type: String
     },

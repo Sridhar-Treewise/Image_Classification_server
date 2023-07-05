@@ -21,27 +21,33 @@ const userSchema = new mongoose.Schema({
         enums: USER_TYPE,
         default: USER_TYPE[0]
     },
-    vesselName: {
+    vessel_name: {
+        type: String,
+        default: "",
+        index: true,
+        unique: true
+    },
+    company_name: {
         type: String,
         default: "",
         index: true,
         unique: true
     },
     vesselDetails: {
-        imoNumber: { type: Number, default: "" },
+        imo_number: { type: Number, default: "" },
         manufacturer: { type: String, default: "" },
-        engineType: { type: String, default: "" },
-        vesselType: { type: String, default: "" }
+        type_of_engine: { type: String, default: "" },
+        vessel_type: { type: String, default: "" }
     },
     inspectionDetails: {
-        inspectionDate: { type: Date, default: "" },
-        serviceLoadMCR: { type: String, default: "" },
-        totalRunningHours: { type: String, default: "" },
-        lastRunningHours: { type: String, default: "" },
-        cylinderOilType: { type: String, default: "" },
-        cylinderOilConsump: { type: String, default: "" },
-        serviceLoad: { type: String, default: "" },
-        cylinderNumber: { type: String, default: "" }
+        inspection_date: { type: Date, default: "" },
+        normal_service_load_in_percent_MCRMCR: { type: String, default: "" },
+        total_running_hours: { type: String, default: "" },
+        running_hrs_since_last: { type: String, default: "" },
+        cyl_oil_Type: { type: String, default: "" },
+        cyl_oil_consump_Ltr_24hr: { type: String, default: "" },
+        normal_service_load_in_percent_MCR: { type: String, default: "" },
+        cylinder_numbers: { type: String, default: "" }
     },
     organizationBelongsTo: {
         type: mongoose.Schema.Types.ObjectId,

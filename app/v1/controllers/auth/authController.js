@@ -31,15 +31,15 @@ export const signIn = async (req, res) => {
 };
 
 export const signUp = async (req, res) => {
-    const { email = "", password, organizationAdmin, vesselName = "", userType = "" } = req.body;
+    const { email = "", password, organizationAdmin, vessel_name = "", userType = "" } = req.body;
     const credentials = _.cloneDeep(req.body);
     const profileDetails = _.omit(credentials, ["password"]);
     const domain = email.split("@")[1];
     try {
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
-        const isVesselExists = await User.findOne({ vesselName });
-        if (isVesselExists && isVesselExists.vesselName === vesselName && userType !== USER_TYPE[1]) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS_VESSEL });
+        const isVesselExists = await User.findOne({ vessel_name });
+        if (isVesselExists && isVesselExists.vessel_name === vessel_name && userType !== USER_TYPE[1]) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS_VESSEL });
         const orgExists = await Organization.exists({ domain });
         if (orgExists && userType === USER_TYPE[1]) {
             return res.status(400).json({ message: ERROR_MSG.NOT_ALLOWED });
@@ -49,13 +49,13 @@ export const signUp = async (req, res) => {
         }
         if (userType && userType === USER_TYPE[1]) { // org admin creation
             const hashedPassword = await bcrypt.hash(password, 10);
-            const user = await User.create({ ...profileDetails, userType, password: hashedPassword, vesselDetails: { vesselName } });
+            const user = await User.create({ ...profileDetails, userType, password: hashedPassword, vesselDetails: { vessel_name } });
             const code = domain.split(".")[0].toUpperCase() || "";
             const createOrg = await Organization.create({ domain, code, manager: user._id });
             createOrg.admins[0] = user._id;
             await createOrg.save();
             user.organizationBelongsTo = createOrg._id;
-            user.vesselDetails.vesselName = vesselName;
+            user.vesselDetails.vessel_name = vessel_name;
             await user.save();
             if (!createOrg) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
             const token = jwt.sign({ userId: user._id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
@@ -64,7 +64,7 @@ export const signUp = async (req, res) => {
         if (userType && userType === USER_TYPE[0]) { // vessel user creation
             const org = await Organization.findOne({ domain });
             const hashedPassword = await bcrypt.hash(password, 10);
-            const result = await User.create({ ...profileDetails, password: hashedPassword, userType, organizationBelongsTo: org._id, vesselDetails: { vesselName } });
+            const result = await User.create({ ...profileDetails, password: hashedPassword, userType, organizationBelongsTo: org._id, vesselDetails: { vessel_name } });
             if (!result) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
             const token = jwt.sign({ userId: result._id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
             res.status(201).json({ token });
