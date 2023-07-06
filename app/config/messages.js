@@ -1,15 +1,18 @@
+/* eslint-disable camelcase */
 export const ERROR_MSG = {
     ALREADY_EXISTS: "Email already exists, please try different email",
     PROFILE_NOT: "Profile not created, try again",
     SOMETHING_WENT: "Something Went Wrong",
     USER_NOT: "User not found",
     ORG_ADMIN_NOT: "Organization Admin field required for registering",
-    ADMIN_USER_ALREADY: "Admin already exists",
+    ADMIN_USER_ALREADY: "Administrator already exists",
     ADMINS_NOT_EXISTS: "For given domain administrator not exists",
     NO_DETAILS: "No details found",
-    ALREADY_EXISTS_VESSEL: "Vessel Name already exists, Contact support Team",
+    ALREADY_EXISTS_VESSEL: "Vessel Name already exists, Contact support Team / Contact support Team your Administrator",
     ERROR_OCCURRED: "An error has occurred",
-    NOT_ALLOWED: "Not Allowed"
+    NOT_ALLOWED: "Not Allowed, choose one Administrator",
+    NO_ADMIN: (company_name = "") => ` No administrator account found for the organization '${company_name}'. Please ensure that a valid administrator account exists and try again.`,
+    TRY_AGAIN: "Please try again,"
 
 };
 

@@ -2,10 +2,15 @@ import mongoose from "mongoose";
 
 const organizationSchema = new mongoose.Schema({
     company_name: {
-        type: String
+        type: String,
+        default: "",
+        index: true,
+        unique: true
     },
     domain: {
-        type: String
+        type: String,
+        default: "",
+        index: true
     },
     code: String,
     manager: {

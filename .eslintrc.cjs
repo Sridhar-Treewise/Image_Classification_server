@@ -72,7 +72,6 @@ module.exports = {
     "eol-last": 1, // enforce newline at the end of file, with no multiple empty lines
     "indent": ["error", 4], // this option sets a specific tab width for your code (off by default)
     "brace-style": 2,
-    "camelcase": 2, // require camel case names
     "comma-spacing": [
       2,
       {

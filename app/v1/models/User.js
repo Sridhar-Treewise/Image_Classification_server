@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         index: true,
-        unique: true,
-        trim: true
+        trim: true,
+        unique: true
     },
     phone: String,
     password: { type: String, unique: true },
@@ -21,19 +21,8 @@ const userSchema = new mongoose.Schema({
         enums: USER_TYPE,
         default: USER_TYPE[0]
     },
-    vessel_name: {
-        type: String,
-        default: "",
-        index: true,
-        unique: true
-    },
-    company_name: {
-        type: String,
-        default: "",
-        index: true,
-        unique: true
-    },
     vesselDetails: {
+        vessel_name: { type: String, default: "", index: true },
         imo_number: { type: Number, default: "" },
         manufacturer: { type: String, default: "" },
         type_of_engine: { type: String, default: "" },
@@ -49,7 +38,12 @@ const userSchema = new mongoose.Schema({
         normal_service_load_in_percent_MCR: { type: String, default: "" },
         cylinder_numbers: { type: String, default: "" }
     },
+    officerAdmin: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
     organizationBelongsTo: {
+        index: true,
         type: mongoose.Schema.Types.ObjectId,
         ref: "Organizations"
     },

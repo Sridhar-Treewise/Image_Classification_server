@@ -42,13 +42,10 @@ const customDomainValidator = (value, helpers) => {
 };
 
 export const signUpSchema = Joi.object({
-    // email: Joi.string()
-    //     .email({ tlds: { allow: false } })
-    //     .required().message("Invalid email domain"),
-    // .custom(customDomainValidator, "The email domain Not allowed")
-    email: Joi.string().email().min(1).required(),
-    fullName: Joi.string().min(1).required(),
-    vessel_name: Joi.string().min(1).required(),
+    company_name: Joi.string().required(),
+    email: Joi.string().email().required(),
+    fullName: Joi.string().required(),
+    vessel_name: Joi.string().required(),
     password: Joi.string().min(2).required(),
     confirmPassword: Joi.string().min(2).required(),
     userType: Joi.string().min(2).required(),
