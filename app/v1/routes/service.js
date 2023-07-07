@@ -1,9 +1,10 @@
 import express from "express";
-import { getInspectionDetails, getReports, savePredictionData, updateProfile } from "../controllers/vessel/service.js";
+import { getInspectionDetails, getReports, savePredictionData, updateProfile, updateInspectionDetails } from "../controllers/vessel/service.js";
 import { verifyToken } from "../../utils/middleware.js";
 import adminRoutes from "./admin/adminRoutes.js";
 import orgRoutes from "./organization/orgRoutes.js";
 import commonRoutes from "./common/commRoutes.js";
+import { inspectionDetailValidate } from "../validation/VesselValidator.js";
 
 const router = express.Router();
 
@@ -11,7 +12,8 @@ const router = express.Router();
 router.post("/updateData", updateProfile);
 router.post("/savePredictionData", savePredictionData);
 router.get("/get-reports", getReports);
-router.get("/inspection-details", getInspectionDetails);
+router.get("/inspection-details", getInspectionDetails); // Retrieves the inspection details
+router.put("/inspection-details", inspectionDetailValidate, updateInspectionDetails); // Updates the inspection details
 
 //  admin services
 router.use("/admin", adminRoutes);

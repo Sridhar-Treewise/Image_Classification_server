@@ -63,3 +63,16 @@ export const getInspectionDetails = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+
+
+export const updateInspectionDetails = async (req, res) => {
+    const userId = req.user;
+    try {
+        const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: req.body } }, { new: true });
+        if (!result) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        res.status(201).json({ data: result.inspectionDetails || {} });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+

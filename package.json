@@ -7,7 +7,8 @@
   "scripts": {
     "test": "mocha app/v1/tests/**/*.js",
     "dev": "npm i && NODE_ENV=development nodemon index.js",
-    "prod": "npm i && NODE_ENV=production node index.js"
+    "prod": "npm i && NODE_ENV=production node index.js",
+    "clean": "rmdir /s /q node_modules && npm cache clean --force"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "mongoose": "^6.6.5",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",

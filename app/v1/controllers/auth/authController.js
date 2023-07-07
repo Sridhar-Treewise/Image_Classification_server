@@ -138,3 +138,25 @@ export const getAdmins = async (req, res) => {
     }
 };
 
+
+export const getOrgs = async (req, res) => {
+    try {
+        const organizations = await Organization.find({}, "company_name _id");
+        if (!organizations) {
+            return res.status(200).json(handleFailedOperation(ERROR_MSG.ORG_NOT_FOUND));
+        }
+        const organizationsWithId = organizations.map(org => {
+            return {
+                id: org._id,
+                name: org.company_name || ""
+            };
+        });
+        res.status(200).json({ data: organizationsWithId });
+    } catch (error) {
+        if (environment === "development") {
+            // eslint-disable-next-line no-console
+            console.log("error \n", error.message);
+        }
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};

@@ -12,7 +12,9 @@ export const ERROR_MSG = {
     ERROR_OCCURRED: "An error has occurred",
     NOT_ALLOWED: "Not Allowed, choose one Administrator",
     NO_ADMIN: (company_name = "") => ` No administrator account found for the organization '${company_name}'. Please ensure that a valid administrator account exists and try again.`,
-    TRY_AGAIN: "Please try again,"
+    TRY_AGAIN: "Please try again,",
+    UPDATE_FAILED: "UPDATING_FAILED",
+    ORG_NOT_FOUND: "No Organization list found"
 
 };
 
@@ -29,5 +31,7 @@ export const schemaMessages = {
     passwordRequired: "Password is required",
     emailString: "Email must be a string",
     invalidEmail: "Invalid email format",
-    emailRequired: "Email is required"
+    emailRequired: "Email is required",
+    dateRequired: (type = "") => `${type} Date Required`,
+    dateNumber: "Inspection Date Must be a epoch Date Number"
 };
