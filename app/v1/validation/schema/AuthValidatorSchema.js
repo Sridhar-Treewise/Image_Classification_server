@@ -3,18 +3,6 @@ import Joi from "joi";
 import { schemaMessages } from "../../../config/messages.js";
 
 export const auth = {
-    registerSchema: Joi.object({
-        password: Joi.string().min(3).max(30).required().messages({
-            "string.min": schemaMessages.passwordAtLeast3,
-            "string.max": schemaMessages.passwordNotGT30,
-            "any.required": schemaMessages.passwordRequired
-        }),
-        email: Joi.string().email().required().messages({
-            "string.base": schemaMessages.emailString,
-            "string.email": schemaMessages.invalidEmail,
-            "any.required": schemaMessages.emailRequired
-        }),
-    }),
     loginSchema: Joi.object({
         password: Joi.string().min(3).max(30).required().messages({
             "string.min": schemaMessages.passwordAtLeast3,
@@ -50,6 +38,7 @@ export const signUpSchema = Joi.object({
     confirmPassword: Joi.string().min(2).required(),
     userType: Joi.string().min(2).required(),
     imo_number: Joi.string().min(2).required(),
+    newOrg: Joi.boolean().optional(),
     organizationAdmin: Joi.string().allow("").when("userType", {
         is: "Organization",
         then: Joi.string().required(),
