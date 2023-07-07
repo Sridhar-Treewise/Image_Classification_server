@@ -56,3 +56,6 @@ Service names should represent the specific functionality or task they perform, 
 
 Use camelCase for variable and function names.
 Choose descriptive names that clearly indicate the purpose or functionality of the variable or function.
+
+- Date 
+ Uses YYYY-MM-DD date -> epoch number format 
