@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema({
         vessel_type: { type: String, default: "" }
     },
     inspectionDetails: {
-        inspection_date: { type: Number, default: "" },
+        inspection_date: { type: Number, default: 0 },
         normal_service_load_in_percent_MCRMCR: { type: String, default: "" },
         total_running_hours: { type: String, default: "" },
         running_hrs_since_last: { type: String, default: "" },
