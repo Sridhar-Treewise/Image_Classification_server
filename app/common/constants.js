@@ -17,7 +17,12 @@ export const ERROR_CODE = {
     TOKEN_REQUIRED: 9402,
     JWT_TOKEN_EXPIRED: 9000
 };
+export const HTTP_HEADER = {
 
+    headers: {
+        "Content-Type": "multipart/form-data"
+    }
+};
 
 export const DEFECT_DETECTION = {
     PREDICT_IMAGE: "https://defectdetectionrings.azurewebsites.net/",

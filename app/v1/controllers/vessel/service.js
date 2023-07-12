@@ -3,6 +3,8 @@
 import _ from "lodash";
 import User from "../../models/User.js";
 import { ERROR_MSG } from "../../../config/messages.js";
+import { DEFECT_DETECTION, HTTP_HEADER } from "../../../common/constants.js";
+import axios from "axios";
 
 export const updateProfile = async (req, res) => {
     const { email } = req.body;
@@ -65,6 +67,39 @@ export const getInspectionDetails = async (req, res) => {
 };
 
 
+export const generatePredictedImage = async (req, res) => {
+    const userId = req.user;
+
+    const { image, cylinder, ...updatedData } = req.body;
+    if (!image) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+    const predicatedImagePromise = axios.post(DEFECT_DETECTION.PREDICT_IMAGE, image, HTTP_HEADER);
+    try {
+        const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: updatedData } }, { new: true });
+        if (!result) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        predicatedImagePromise.then(response => {
+            const results = response.data;
+            res.status(201).json({ data: { predictionDetails: { ...results, cylinder }, updatedResult: result.inspectionDetails } });
+        });
+        predicatedImagePromise.catch(error => {
+            if (error.response) {
+                const status = error.response.status;
+                const message = error.response.data.message;
+                res.status(status).json({
+                    errorTitle: ERROR_MSG.SOMETHING_WENT,
+                    message
+                });
+            } else {
+                res.status(500).json({
+                    errorTitle: ERROR_MSG.SOMETHING_WENT,
+                    message: error.message
+                });
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+
 export const updateInspectionDetails = async (req, res) => {
     const userId = req.user;
     try {
@@ -75,4 +110,3 @@ export const updateInspectionDetails = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
-
