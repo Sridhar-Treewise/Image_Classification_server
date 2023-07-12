@@ -4,6 +4,10 @@
 #### Project Requirements setup
 
 - [x] Node.js `v18.12.1 (npm v8.19.2)`
+- [x] mongoose@6.6.5 
+- [x] mongodb@4.9.1
+
+
 - [x] npm
 - [x] code version 1.77.0
 
@@ -19,13 +23,13 @@
 
 - Files and Folders:
 
-Use lowercase letters and hyphens (-) or underscores (_) for file and folder names.
+Use lowercase letters  for file and folder names.
 For file names, use descriptive names that reflect the purpose or functionality of the file.
 For folder names, use plural nouns to represent collections or groups of related files.
 
 - Routes:
 
-Use lowercase letters and hyphens (-) or underscores (_) for route names.
+Use lowercase letters  for route names.
 For route URLs, use lowercase letters and hyphens (-) to separate words.
 Use nouns to represent resources or entities, e.g., /users, /products, /orders.
 Use specific route names for CRUD operations, such as /users/:id for retrieving a specific user.
@@ -49,7 +53,7 @@ Middleware names should reflect their purpose or functionality, e.g., authMiddle
 
 - Services:
 
-Use lowercase letters and hyphens (-) or underscores (_) for service names.
+Use lowercase letters  for service names.
 Service names should represent the specific functionality or task they perform, e.g., userService.js, emailService.js.
 
 - Variables and Functions:
