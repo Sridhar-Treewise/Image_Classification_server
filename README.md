@@ -8,7 +8,7 @@
 - [x] mongodb@4.9.1
 
 
-- [x] npm
+- [x] npm 
 - [x] code version 1.77.0
 
 #### Initial setup
