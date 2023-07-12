@@ -48,7 +48,7 @@ Append "Model" to the end of the model file names, e.g., UserModel.js, ProductMo
 
 - Middleware:
 
-Use lowercase letters and hyphens (-) or underscores (_) for middleware names.
+Use lowercase letters  for middleware names.
 Middleware names should reflect their purpose or functionality, e.g., authMiddleware.js, validationMiddleware.js.
 
 - Services:
