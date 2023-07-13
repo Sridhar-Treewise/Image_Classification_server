@@ -29,5 +29,10 @@ export const inspectionImageSchema = Joi.object({
     normal_service_load_in_percent_MCR: Joi.string().required(),
     cylinder_numbers: Joi.number().required(),
     cylinder: Joi.number().max(100).optional(),
-    image: Joi.string().optional()
+    image: Joi.string().custom((value, helpers) => {
+        if (!value.startsWith("data:image")) {
+            return helpers.error("any.invalid");
+        }
+        return value;
+    }, "base64 image")
 });

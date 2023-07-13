@@ -15,6 +15,8 @@ const environment = process.env.NODE_ENV || "development";
 // add compression
 // block XSS
 // Caching
+// clustering
+// connection pool
 // validate, body, query, params
 // success failed operation
 // do proper planning

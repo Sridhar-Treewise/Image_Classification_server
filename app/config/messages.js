@@ -33,5 +33,5 @@ export const schemaMessages = {
     invalidEmail: "Invalid email format",
     emailRequired: "Email is required",
     dateRequired: (type = "") => `${type} Date Required`,
-    dateNumber: "Inspection Date Must be a epoch Date Number"
+    dateNumber: "Inspection Date Must be timestamp in Unix format"
 };

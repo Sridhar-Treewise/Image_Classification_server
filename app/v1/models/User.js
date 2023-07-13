@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
     organizationBelongsTo: {
         index: true,
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Organizations"
+        ref: "Organization"
     },
     designation: {
         type: String,
