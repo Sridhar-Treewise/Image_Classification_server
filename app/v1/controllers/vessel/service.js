@@ -69,9 +69,9 @@ export const getInspectionDetails = async (req, res) => {
 
 export const generatePredictedImage = async (req, res) => {
     const userId = req.user;
-
+    console.log("req", req.body)
     const { image, cylinder, ...updatedData } = req.body;
-    if (!image) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+    if (!image) return res.status(400).send({ message: ERROR_MSG.PAYLOAD_INVALID });
     const predicatedImagePromise = axios.post(DEFECT_DETECTION.PREDICT_IMAGE, image, HTTP_HEADER);
     try {
         const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: updatedData } }, { new: true });

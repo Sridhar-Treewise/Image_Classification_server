@@ -15,6 +15,9 @@ export const inspectionDetailsSchema = Joi.object({
     cylinder_numbers: Joi.number().required()
 });
 
+const MIN_IMAGE_LENGTH = 13653; // at least 10 kb
+const MAX_IMAGE_LENGTH = 6980736;
+
 
 export const inspectionImageSchema = Joi.object({
     inspection_date: Joi.number().required().messages({
@@ -31,6 +34,12 @@ export const inspectionImageSchema = Joi.object({
     cylinder: Joi.number().max(100).optional(),
     image: Joi.string().custom((value, helpers) => {
         if (!value.startsWith("data:image")) {
+            return helpers.error("any.invalid");
+        }
+        if (value.length < MIN_IMAGE_LENGTH) {
+            return helpers.error("any.invalid");
+        }
+        if (value.length > MAX_IMAGE_LENGTH) {
             return helpers.error("any.invalid");
         }
         return value;
