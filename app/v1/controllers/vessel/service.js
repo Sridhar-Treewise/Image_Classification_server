@@ -5,6 +5,7 @@ import User from "../../models/User.js";
 import { ERROR_MSG } from "../../../config/messages.js";
 import { DEFECT_DETECTION, HTTP_HEADER } from "../../../common/constants.js";
 import axios from "axios";
+import { handleFailedOperation } from "../../../utils/apiOperation.js";
 
 export const updateProfile = async (req, res) => {
     const { email } = req.body;
@@ -67,37 +68,36 @@ export const getInspectionDetails = async (req, res) => {
 };
 
 
-export const generatePredictedImage = async (req, res) => {
+export const generatePredictedImage = (req, res) => {
     const userId = req.user;
-    console.log("req", req.body)
     const { image, cylinder, ...updatedData } = req.body;
-    if (!image) return res.status(400).send({ message: ERROR_MSG.PAYLOAD_INVALID });
+
+    if (!image) {
+        return res.status(400).send({ message: ERROR_MSG.PAYLOAD_INVALID });
+    }
+
     const predicatedImagePromise = axios.post(DEFECT_DETECTION.PREDICT_IMAGE, image, HTTP_HEADER);
-    try {
-        const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: updatedData } }, { new: true });
-        if (!result) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
-        predicatedImagePromise.then(response => {
+
+    predicatedImagePromise
+        .then(async response => {
             const results = response.data;
+            const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: updatedData } }, { new: true });
+
+            if (!result) {
+                return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+            }
             res.status(201).json({ data: { predictionDetails: { ...results, cylinder }, updatedResult: result.inspectionDetails } });
-        });
-        predicatedImagePromise.catch(error => {
+        })
+        .catch(error => {
             if (error.response) {
-                const status = error.response.status;
                 const message = error.response.data.message;
-                res.status(status).json({
-                    errorTitle: ERROR_MSG.SOMETHING_WENT,
-                    message
-                });
+                res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
+            } else if (error.request) {
+                res.status(503).json({ message: "The resource is temporarily unavailable. Please try again later." });
             } else {
-                res.status(500).json({
-                    errorTitle: ERROR_MSG.SOMETHING_WENT,
-                    message: error.message
-                });
+                res.status(500).json(handleFailedOperation(error.message, ERROR_MSG.SOMETHING_WENT));
             }
         });
-    } catch (error) {
-        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
-    }
 };
 
 export const updateInspectionDetails = async (req, res) => {
