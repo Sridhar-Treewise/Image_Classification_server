@@ -1,5 +1,5 @@
 import express from "express";
-import JoiValidator from 'express-joi-validation'
+import JoiValidator from "express-joi-validation"
 // import { createOrg } from "../controllers/organisation";
 
 const validator = JoiValidator.createValidator({})

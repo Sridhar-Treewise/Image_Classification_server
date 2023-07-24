@@ -3,6 +3,9 @@
 import _ from "lodash";
 import User from "../../models/User.js";
 import { ERROR_MSG } from "../../../config/messages.js";
+import { DEFECT_DETECTION, HTTP_HEADER } from "../../../common/constants.js";
+import axios from "axios";
+import { handleFailedOperation } from "../../../utils/apiOperation.js";
 
 export const updateProfile = async (req, res) => {
     const { email } = req.body;
@@ -65,6 +68,38 @@ export const getInspectionDetails = async (req, res) => {
 };
 
 
+export const generatePredictedImage = (req, res) => {
+    const userId = req.user;
+    const { image, cylinder, ...updatedData } = req.body;
+
+    if (!image) {
+        return res.status(400).send({ message: ERROR_MSG.PAYLOAD_INVALID });
+    }
+
+    const predicatedImagePromise = axios.post(DEFECT_DETECTION.PREDICT_IMAGE, image, HTTP_HEADER);
+
+    predicatedImagePromise
+        .then(async response => {
+            const results = response.data;
+            const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: updatedData } }, { new: true });
+
+            if (!result) {
+                return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+            }
+            res.status(201).json({ data: { predictionDetails: { ...results, cylinder }, updatedResult: result.inspectionDetails } });
+        })
+        .catch(error => {
+            if (error.response) {
+                const message = error.response.data.message;
+                res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
+            } else if (error.request) {
+                res.status(503).json({ message: "The resource is temporarily unavailable. Please try again later." });
+            } else {
+                res.status(500).json(handleFailedOperation(error.message, ERROR_MSG.SOMETHING_WENT));
+            }
+        });
+};
+
 export const updateInspectionDetails = async (req, res) => {
     const userId = req.user;
     try {
@@ -76,3 +111,34 @@ export const updateInspectionDetails = async (req, res) => {
     }
 };
 
+
+export const getVesselInfo = async (req, res) => {
+    const userId = req.user;
+    try {
+        const result = await User.findOne({ _id: userId });
+        if (!result) return res.status(404).send({ message: ERROR_MSG.TRY_AGAIN });
+        const data = { ...result.vesselDetails, cylinder_numbers: result.inspectionDetails.cylinder_numbers };
+        res.status(201).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+
+export const updateVesselInfo = async (req, res) => {
+    const userId = req.user;
+    try {
+        const updateData = {
+            vesselDetails: req.body,
+            "inspectionDetails.cylinder_numbers": req.body.cylinder_numbers
+        };
+        const result = await User.findOneAndUpdate({ _id: userId }, { $set: updateData }, { new: true });
+        if (!result) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        const data = {
+            ...result.vesselDetails,
+            cylinder_numbers: result.inspectionDetails.cylinder_numbers
+        };
+        res.status(201).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
