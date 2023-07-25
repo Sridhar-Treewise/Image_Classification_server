@@ -2,6 +2,7 @@
 export const USER_TYPE = ["Vessel", "Organization", "Admin"];
 
 export const SUBSCRIPTION_MODEL = {
+    FREE: "FREE_TIER",
     BASIC: "BASIC",
     STANDARD: "STANDARD",
     PREMIUM: "PREMIUM"

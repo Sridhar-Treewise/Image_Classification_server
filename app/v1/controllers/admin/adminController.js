@@ -20,8 +20,43 @@ export const createOrg = async (req, res) => {
             if (!profile) return res.status(400).send(ERROR_MSG.PROFILE_NOT)
         }
         const token = jwt.sign({ userId: result._id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
-        res.status(201).json(token)
+        res.status(201).json(token);
     } catch (error) {
-        res.status(500).send("Something went wrong \n" + error)
+        res.status(500).send("Something went wrong \n" + error);
     }
-}
+};
+
+
+export const usersList = async (req, res) => {
+    const { pageSize, pageIndex } = req.query;
+    const parsedPageSize = parseInt(pageSize);
+    const parsedPageIndex = parseInt(pageIndex);
+
+    // Calculate skip value
+    const skip = parsedPageIndex >= 1 ? parsedPageSize * (parsedPageIndex) : 0;
+    const limit = skip + parsedPageSize;
+
+    try {
+        const users = await User.find({ userType: { $ne: "Admin" } })
+            .skip(skip)
+            .limit(limit)
+            .select("-password")
+            .exec();
+
+        const totalPages = users.length;
+
+        const paginationResult = {
+            data: users,
+            pageInfo: {
+                pageSize: parsedPageSize,
+                pageIndex: parsedPageIndex,
+                totalCount: totalPages
+            }
+        };
+
+        res.status(200).json(paginationResult);
+    } catch (error) {
+        // Handle any errors that may occur during the query
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};

@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
     phone: String,
     password: { type: String, unique: true },
     status: { type: Boolean, default: true, require: true },
+    approvedStatus: { type: Boolean, default: false, require: true },
     userType: {
         type: String,
         enums: USER_TYPE,
@@ -54,7 +55,9 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     subscription: {
-        plan: { type: String, default: SUBSCRIPTION_MODEL.BASIC, required: true },
+        plan: {
+            type: String, default: SUBSCRIPTION_MODEL.FREE, required: true
+        },
         startDate: { type: Date },
         endDate: { type: Date },
         transactionId: {

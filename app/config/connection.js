@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const customOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true
-}
+};
 export function connectToDatabase(uri, options = customOptions, PORT, app) {
     return mongoose
         .connect(uri, options)
@@ -18,3 +18,4 @@ export function connectToDatabase(uri, options = customOptions, PORT, app) {
             console.log(`Error connecting database \n ${err.message}`);
         });
 }
+

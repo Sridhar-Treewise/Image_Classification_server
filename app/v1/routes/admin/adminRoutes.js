@@ -1,10 +1,11 @@
 import express from "express";
-import JoiValidator from "express-joi-validation"
-// import { createOrg } from "../controllers/organisation";
 
-const validator = JoiValidator.createValidator({})
+import { createOrg, usersList } from "../../controllers/admin/adminController.js";
+
+
 const router = express.Router();
 
 
-// router.post("/createOrg", createOrg);
+router.post("/create-org", createOrg);
+router.get("/users-all", usersList);
 export default router;
