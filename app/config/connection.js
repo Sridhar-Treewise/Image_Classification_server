@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import mongoose from "mongoose";
-
-export function connectToDatabase(uri, options, PORT, app) {
+const customOptions = { useNewUrlParser: true, useUnifiedTopology: true };
+export function connectToDatabase(uri, options = customOptions, PORT, app) {
     return mongoose
         .connect(uri, options)
         .then(() => {
@@ -15,3 +15,4 @@ export function connectToDatabase(uri, options, PORT, app) {
             console.log(`Error connecting database \n ${err.message}`);
         });
 }
+
