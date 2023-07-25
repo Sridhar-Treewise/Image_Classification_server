@@ -6,8 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha app/v1/tests/**/*.js",
-    "dev": "npm i && NODE_ENV=development nodemon index.js",
+    "dev": "npm i &&  NODE_ENV=development nodemon index.js",
     "prod": "npm i && NODE_ENV=production node index.js",
+    "local": "npm i &&  NODE_ENV=local nodemon index.js",
     "clean": "rmdir /s /q node_modules && npm cache clean --force"
   },
   "repository": {
@@ -35,8 +36,7 @@
     "moment": "^2.29.4",
     "mongoose": "^6.6.5",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.1",
-    "nodemon": "^2.0.20"
+    "multer": "^1.4.5-lts.1"
   },
   "devDependencies": {
     "chai": "^4.3.7",
@@ -46,6 +46,7 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "mocha": "^10.2.0",
+    "nodemon": "^3.0.1",
     "supertest": "^6.3.3"
   }
 }

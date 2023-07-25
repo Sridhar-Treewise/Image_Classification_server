@@ -14,7 +14,17 @@ const databaseConfig = {
     },
     production: {
         uri: database.uri,
-        options
+        options: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        }
+    },
+    local: {
+        uri: database.uri,
+        options: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        }
     }
 };
 
