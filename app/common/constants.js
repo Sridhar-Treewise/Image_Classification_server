@@ -2,6 +2,7 @@
 export const USER_TYPE = ["Vessel", "Organization", "Admin"];
 
 export const SUBSCRIPTION_MODEL = {
+    FREE: "FREE_TIER",
     BASIC: "BASIC",
     STANDARD: "STANDARD",
     PREMIUM: "PREMIUM"
@@ -17,7 +18,12 @@ export const ERROR_CODE = {
     TOKEN_REQUIRED: 9402,
     JWT_TOKEN_EXPIRED: 9000
 };
+export const HTTP_HEADER = {
 
+    headers: {
+        "Content-Type": "multipart/form-data"
+    }
+};
 
 export const DEFECT_DETECTION = {
     PREDICT_IMAGE: "https://defectdetectionrings.azurewebsites.net/",

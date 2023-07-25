@@ -32,9 +32,9 @@ export const signIn = async (req, res) => {
 };
 
 export const signUp = async (req, res) => {
-    const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "" } = req.body;
+    const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "", newOrg = false, newOrgName = "" } = req.body;
     const credentials = _.cloneDeep(req.body);
-    const profileDetails = _.omit(credentials, ["password", "vessel_name", "company_name"]); // Omit certain fields from the cloned credentials
+    const profileDetails = _.omit(credentials, ["password", "vessel_name", "company_name", "newOrgName"]); // Omit certain fields from the cloned credentials
     const domain = email.split("@")[1];
     let isVesselNameExists = null;
     try {
@@ -59,11 +59,11 @@ export const signUp = async (req, res) => {
         }
         // If no organization exists and no organization admin is specified,
         // and the user type is "Organization", create an organization admin
-        if (!orgExists && !organizationAdmin && userType === USER_TYPE[1]) {
+        if (!orgExists && !organizationAdmin && userType === USER_TYPE[1] && newOrg) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = await User.create({ ...profileDetails, userType, password: hashedPassword, designation: DESIGNATION[2] });
             const code = domain.split(".")[0].toUpperCase() || "";
-            const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
+            const createOrg = await Organization.create({ domain, code, manager: user._id, newOrgName });
             createOrg.admins[0] = user._id;
             await createOrg.save();
             user.organizationBelongsTo = createOrg._id;

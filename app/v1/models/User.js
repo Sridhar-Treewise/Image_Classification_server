@@ -16,6 +16,7 @@ const userSchema = new mongoose.Schema({
     phone: String,
     password: { type: String, unique: true },
     status: { type: Boolean, default: true, require: true },
+    approvedStatus: { type: Boolean, default: false, require: true },
     userType: {
         type: String,
         enums: USER_TYPE,
@@ -23,7 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     vesselDetails: {
         vessel_name: { type: String, default: "", index: true },
-        imo_number: { type: Number, default: "" },
+        imo_number: { type: Number, default: 0 },
         manufacturer: { type: String, default: "" },
         type_of_engine: { type: String, default: "" },
         vessel_type: { type: String, default: "" }
@@ -36,7 +37,7 @@ const userSchema = new mongoose.Schema({
         cyl_oil_Type: { type: String, default: "" },
         cyl_oil_consump_Ltr_24hr: { type: String, default: "" },
         normal_service_load_in_percent_MCR: { type: String, default: "" },
-        cylinder_numbers: { type: Number, default: "" }
+        cylinder_numbers: { type: Number, default: 0 }
     },
     officerAdmin: {
         type: mongoose.Schema.Types.ObjectId,
@@ -45,7 +46,7 @@ const userSchema = new mongoose.Schema({
     organizationBelongsTo: {
         index: true,
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Organizations"
+        ref: "Organization"
     },
     designation: {
         type: String,
@@ -54,7 +55,9 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     subscription: {
-        plan: { type: String, default: SUBSCRIPTION_MODEL.BASIC, required: true },
+        plan: {
+            type: String, default: SUBSCRIPTION_MODEL.FREE, required: true
+        },
         startDate: { type: Date },
         endDate: { type: Date },
         transactionId: {
@@ -66,3 +69,4 @@ const userSchema = new mongoose.Schema({
 const User = new mongoose.model("User", userSchema);
 
 export default User;
+
