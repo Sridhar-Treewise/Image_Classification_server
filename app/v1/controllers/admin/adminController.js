@@ -26,15 +26,14 @@ export const createOrg = async (req, res) => {
     }
 };
 
-
 export const usersList = async (req, res) => {
     const { pageSize, pageIndex } = req.query;
     const parsedPageSize = parseInt(pageSize);
     const parsedPageIndex = parseInt(pageIndex);
 
     // Calculate skip value
-    const skip = parsedPageIndex >= 1 ? parsedPageSize * (parsedPageIndex) : 0;
-    const limit = skip + parsedPageSize;
+    const skip = parsedPageIndex >= 1 ? (parsedPageIndex - 1) * parsedPageSize : 0;
+    const limit = parsedPageSize;
 
     try {
         const users = await User.find({ userType: { $ne: "Admin" } })
@@ -43,14 +42,14 @@ export const usersList = async (req, res) => {
             .select("-password")
             .exec();
 
-        const totalPages = users.length;
+        const totalCount = await User.countDocuments({ userType: { $ne: "Admin" } });
 
         const paginationResult = {
             data: users,
             pageInfo: {
                 pageSize: parsedPageSize,
                 pageIndex: parsedPageIndex,
-                totalCount: totalPages
+                totalCount
             }
         };
 
