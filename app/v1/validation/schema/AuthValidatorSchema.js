@@ -30,7 +30,7 @@ const customDomainValidator = (value, helpers) => {
 };
 
 export const signUpSchema = Joi.object({
-    company_name: Joi.string().required(),
+    company_name: Joi.string().optional(),
     email: Joi.string().email().required(),
     fullName: Joi.string().required(),
     vessel_name: Joi.string().required(),
