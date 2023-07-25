@@ -63,7 +63,7 @@ export const signUp = async (req, res) => {
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = await User.create({ ...profileDetails, userType, password: hashedPassword, designation: DESIGNATION[2] });
             const code = domain.split(".")[0].toUpperCase() || "";
-            const createOrg = await Organization.create({ domain, code, manager: user._id, newOrgName });
+            const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
             createOrg.admins[0] = user._id;
             await createOrg.save();
             user.organizationBelongsTo = createOrg._id;
