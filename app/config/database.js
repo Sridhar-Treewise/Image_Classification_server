@@ -17,6 +17,13 @@ const databaseConfig = {
             useNewUrlParser: true,
             useUnifiedTopology: true
         }
+    },
+    local: {
+        uri: database.uri,
+        options: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        }
     }
 };
 
