@@ -20,7 +20,7 @@ export const signIn = async (req, res) => {
         const id = user._id.toString();
         const isPassword = await bcrypt.compare(password, user.password);
         if (!isPassword) return res.status(401).json({ messages: "Invalid Credential" });
-        const token = jwt.sign({ userId: id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
+        const token = jwt.sign({ userId: id, userType: user.userType }, process.env.JWT_SECRET, { expiresIn: "2h" });
         res.status(200).json({ token });
     } catch (error) {
         if (environment === "development") {
@@ -69,7 +69,7 @@ export const signUp = async (req, res) => {
             user.organizationBelongsTo = createOrg._id;
             await user.save();
             if (!createOrg) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
-            const token = jwt.sign({ userId: user._id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
+            const token = jwt.sign({ userId: user._id, userType: user.userType }, process.env.JWT_SECRET, { expiresIn: "2h" });
             res.status(201).json({ token });
         }
         // If the organization exists and the user type is "Vessel", create a vessel user
@@ -87,7 +87,7 @@ export const signUp = async (req, res) => {
                     vesselDetails: { vessel_name }
                 });
             if (!result) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
-            const token = jwt.sign({ userId: result._id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
+            const token = jwt.sign({ userId: result._id, userType: result.userType }, process.env.JWT_SECRET, { expiresIn: "2h" });
             res.status(201).json({ token });
         }
     } catch (error) {
