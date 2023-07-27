@@ -13,8 +13,25 @@ const Schema = new mongoose.Schema({
     cyl_oil_Type: { type: String, default: "" },
     cyl_oil_consump_Ltr_24hr: { type: String, default: "" },
     normal_service_load_in_percent_MCR: { type: String, default: "" },
-    cylinder_numbers: { type: Number }
-    // ...other data
+    cylinder_numbers: { type: Number },
+    organization: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Organization",
+        index: true
+    },
+    admin: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        index: true
+    },
+    predictionInfo: {
+        brk: {},
+        dep: {},
+        image: "",
+        lub: {},
+        surf: {},
+        cylinder: { type: Number }
+    }
 
 });
 const Report = mongoose.model("Reports", Schema);

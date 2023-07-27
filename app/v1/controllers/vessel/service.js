@@ -6,6 +6,7 @@ import { ERROR_MSG } from "../../../config/messages.js";
 import { DEFECT_DETECTION, HTTP_HEADER } from "../../../common/constants.js";
 import axios from "axios";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
+import Report from "../../models/Reports.js";
 
 export const updateProfile = async (req, res) => {
     const { email } = req.body;
@@ -20,10 +21,11 @@ export const updateProfile = async (req, res) => {
 };
 
 export const savePredictionData = async (req, res) => {
-    const { user, predictionInfo } = req.body;
+    const userId = req.user;
+    const { predictionInfo } = req.body;
+    const data = { vesselId: userId, predictionInfo, ...req.body };
     try {
-        const result = await User
-            .updateOne({ _id: user._id }, { $push: { cylinderDetails: predictionInfo } });
+        const result = await Report.create(data);
         if (!result) return res.status(400).json({ message: "Data did not saved" });
         res.status(201).json(result);
     } catch (error) {
