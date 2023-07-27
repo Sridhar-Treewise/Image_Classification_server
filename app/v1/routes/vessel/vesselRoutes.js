@@ -5,7 +5,7 @@ import { getInspectionDetails, getReports, savePredictionData, updateProfile, up
 const router = express.Router();
 
 router.post("/updateData", updateProfile);
-router.post("/prediction-save", savePredictionData);
+router.post("/predicted/save", savePredictionData);
 router.get("/reports", getReports);
 router.get("/inspection-details", getInspectionDetails); // Retrieves the inspection details
 router.put("/inspection-details", inspectionDetailValidate, updateInspectionDetails); // Updates the inspection details
