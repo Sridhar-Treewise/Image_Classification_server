@@ -7,6 +7,9 @@ const router = express.Router();
 router.post("/updateData", updateProfile);
 router.post("/predicted/save", predictedDataValidate, savePredictionData);
 router.get("/reports", getReports);
+// TODO
+// Get Report by id
+router.get("/reports/:id", getReports);
 router.get("/inspection-details", getInspectionDetails); // Retrieves the inspection details
 router.put("/inspection-details", inspectionDetailValidate, updateInspectionDetails); // Updates the inspection details
 router.put("/show-prediction", predictionImageValidation, generatePredictedImage);

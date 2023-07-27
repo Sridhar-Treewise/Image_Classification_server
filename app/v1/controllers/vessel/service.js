@@ -38,6 +38,9 @@ export const savePredictionData = async (req, res) => {
 
 export const getReports = async (req, res) => {
     const id = req.user;
+    // TODO
+    // PAGINATION
+    // Filter by date-range
     try {
         const result = await Report.find({ vesselId: id });
         if (!result) return res.status(404).send({ message: ERROR_MSG.TRY_AGAIN });
