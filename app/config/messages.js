@@ -16,7 +16,8 @@ export const ERROR_MSG = {
     UPDATE_FAILED: "Updating Failed",
     ORG_NOT_FOUND: "No Organization list found",
     PAYLOAD_INVALID: "Invalid Payload",
-    FORBIDDEN: "You don't have permission to access this resource"
+    FORBIDDEN: "You don't have permission to access this resource",
+    FAILED_SAVE: (reason = "") => `Failed to save data :${reason}`
 
 };
 

@@ -10,8 +10,10 @@ const router = express.Router();
 
 //  Vessel services
 router.use("/vessel", verifyUserType(KEY_USER_TYPE.VESSEL), vesselRoutes);
+
 //  org services
 router.use("/organization", verifyUserType(KEY_USER_TYPE.ORG), orgRoutes);
+
 //  admin services
 router.use("/admin", verifyUserType(KEY_USER_TYPE.ADMIN), adminRoutes);
 

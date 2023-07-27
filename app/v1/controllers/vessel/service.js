@@ -25,9 +25,11 @@ export const savePredictionData = async (req, res) => {
     const { predictionInfo } = req.body;
     const data = { vesselId: userId, predictionInfo, ...req.body };
     try {
+        // TODO
+        // validation for duplicate prevention
         const result = await Report.create(data);
-        if (!result) return res.status(400).json({ message: "Data did not saved" });
-        res.status(201).json(result);
+        if (!result) return res.status(400).json({ message: ERROR_MSG.FAILED_SAVE("result not found") });
+        res.status(204).json({});
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
@@ -37,9 +39,9 @@ export const savePredictionData = async (req, res) => {
 export const getReports = async (req, res) => {
     const id = req.user;
     try {
-        const result = await User.findOne({ _id: id });
-        if (!result) return res.status(404).send("Profile not found");
-        res.status(200).json(result.cylinderDetails);
+        const result = await Report.find({ vesselId: id });
+        if (!result) return res.status(404).send({ message: ERROR_MSG.TRY_AGAIN });
+        res.status(200).json({ data: result });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
