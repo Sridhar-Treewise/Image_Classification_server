@@ -6,7 +6,6 @@ export const KEY_USER_TYPE = {
     ORG: USER_TYPE[1],
     ADMIN: USER_TYPE[2]
 };
-
 export const SUBSCRIPTION_MODEL = {
     FREE: "FREE_TIER",
     BASIC: "BASIC",

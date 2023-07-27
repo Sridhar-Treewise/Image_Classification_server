@@ -9,7 +9,7 @@ import { KEY_USER_TYPE } from "../../common/constants.js";
 const router = express.Router();
 
 //  Vessel services
-router.use("/", verifyUserType(KEY_USER_TYPE.VESSEL), vesselRoutes);
+router.use("/vessel", verifyUserType(KEY_USER_TYPE.VESSEL), vesselRoutes);
 //  org services
 router.use("/organization", verifyUserType(KEY_USER_TYPE.ORG), orgRoutes);
 //  admin services

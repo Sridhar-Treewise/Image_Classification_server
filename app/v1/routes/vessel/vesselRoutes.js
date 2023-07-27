@@ -10,8 +10,8 @@ router.get("/reports", getReports);
 router.get("/inspection-details", getInspectionDetails); // Retrieves the inspection details
 router.put("/inspection-details", inspectionDetailValidate, updateInspectionDetails); // Updates the inspection details
 router.put("/show-prediction", predictionImageValidation, generatePredictedImage);
-router.get("/vessel-info", getVesselInfo);
-router.put("/vessel-info", vesselDetailsValidation, updateVesselInfo);
+router.get("/info", getVesselInfo);
+router.put("/info", vesselDetailsValidation, updateVesselInfo);
 
 export default router;
 
