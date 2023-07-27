@@ -1,6 +1,12 @@
 /* eslint-disable indent */
 export const USER_TYPE = ["Vessel", "Organization", "Admin"];
 
+export const KEY_USER_TYPE = {
+    VESSEL: USER_TYPE[0],
+    ORG: USER_TYPE[1],
+    ADMIN: USER_TYPE[2]
+};
+
 export const SUBSCRIPTION_MODEL = {
     FREE: "FREE_TIER",
     BASIC: "BASIC",
@@ -19,7 +25,6 @@ export const ERROR_CODE = {
     JWT_TOKEN_EXPIRED: 9000
 };
 export const HTTP_HEADER = {
-
     headers: {
         "Content-Type": "multipart/form-data"
     }
