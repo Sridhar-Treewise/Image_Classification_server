@@ -120,7 +120,7 @@ export const getVesselInfo = async (req, res) => {
         const result = await User.findOne({ _id: userId });
         if (!result) return res.status(404).send({ message: ERROR_MSG.TRY_AGAIN });
         const data = { ...result.vesselDetails, cylinder_numbers: result.inspectionDetails.cylinder_numbers };
-        res.status(201).json({ data });
+        res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
@@ -139,7 +139,7 @@ export const updateVesselInfo = async (req, res) => {
             ...result.vesselDetails,
             cylinder_numbers: result.inspectionDetails.cylinder_numbers
         };
-        res.status(201).json({ data });
+        res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
