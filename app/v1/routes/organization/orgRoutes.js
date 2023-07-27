@@ -1,10 +1,10 @@
 import express from "express";
-import JoiValidator from "express-joi-validation"
 
-const validator = JoiValidator.createValidator({})
 const router = express.Router();
 
 
-// router.post("/create-vessel", createVessel);
+router.post("/create-vessel", (req, res) => {
+    res.status(201).json({ test: "Test" });
+});
 
 export default router;

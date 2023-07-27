@@ -15,7 +15,8 @@ export const ERROR_MSG = {
     TRY_AGAIN: "Please try again,",
     UPDATE_FAILED: "Updating Failed",
     ORG_NOT_FOUND: "No Organization list found",
-    PAYLOAD_INVALID: "Invalid Payload"
+    PAYLOAD_INVALID: "Invalid Payload",
+    FORBIDDEN: "You don't have permission to access this resource"
 
 };
 
