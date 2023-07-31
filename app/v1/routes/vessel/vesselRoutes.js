@@ -1,12 +1,12 @@
 import express from "express";
-import { inspectionDetailValidate, predictedDataValidate, predictionImageValidation, vesselDetailsValidation } from "../../validation/VesselValidator.js";
+import { inspectionDetailValidate, predictedDataValidate, predictionImageValidation, vesselDetailsValidation, reportValidation } from "../../validation/VesselValidator.js";
 import { getInspectionDetails, getReports, savePredictionData, updateProfile, updateInspectionDetails, generatePredictedImage, getVesselInfo, updateVesselInfo } from "../../controllers/vessel/service.js";
 
 const router = express.Router();
 
 router.post("/updateData", updateProfile);
 router.post("/predicted/save", predictedDataValidate, savePredictionData);
-router.get("/reports", getReports);
+router.get("/reports", reportValidation, getReports);
 // TODO
 // Get Report by id
 router.get("/reports/:id", getReports);

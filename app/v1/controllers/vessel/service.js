@@ -24,9 +24,12 @@ export const savePredictionData = async (req, res) => {
     const userId = req.user;
     const { predictionInfo } = req.body;
     const data = { vesselId: userId, predictionInfo, ...req.body };
+
     try {
         // TODO
-        // validation for duplicate prevention
+        // validation for duplicate prevention [+]
+        // const existingRecord = await Report.findOne({ userId });
+        // if (existingRecord) return res.status(409).json({ message: "Vessel id already exists" });
         const result = await Report.create(data);
         if (!result) return res.status(400).json({ message: ERROR_MSG.FAILED_SAVE("result not found") });
         res.status(204).json({});
@@ -38,13 +41,36 @@ export const savePredictionData = async (req, res) => {
 
 export const getReports = async (req, res) => {
     const id = req.user;
-    // TODO
-    // PAGINATION
-    // Filter by date-range
+    const { startDate, endDate } = req.query;
     try {
-        const result = await Report.find({ vesselId: id });
+        const filter = {};
+        if (startDate && endDate) {
+            filter.inspection_date = {
+                $gte: startDate,
+                $lte: endDate
+            };
+        } else {
+            filter.vesselId = id;
+        }
+        const result = await Report.find(filter);
         if (!result) return res.status(404).send({ message: ERROR_MSG.TRY_AGAIN });
-        res.status(200).json({ data: result });
+        const { pageSize, pageIndex } = req.query;
+        const parsedPageSize = parseInt(pageSize);
+        const parsedPageIndex = parseInt(pageIndex);
+        const skip = parsedPageIndex * parsedPageSize;
+        const limit = parsedPageSize;
+
+        const ReportData = await Report.find(filter).skip(skip).limit(limit);
+        const ReportDataCount = await Report.count(filter);
+
+        res.status(200).send({
+            data: ReportData,
+            pagingInfo: {
+                totalCount: ReportDataCount,
+                pageIndex: parsedPageIndex,
+                pageSize: parsedPageSize
+            }
+        });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
