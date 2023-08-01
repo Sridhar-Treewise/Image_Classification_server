@@ -44,16 +44,13 @@ export const getReports = async (req, res) => {
     const { startDate, endDate } = req.query;
     try {
         const filter = {};
+        filter.vesselId = id;
         if (startDate && endDate) {
             filter.inspection_date = {
                 $gte: startDate,
                 $lte: endDate
             };
-        } else {
-            filter.vesselId = id;
         }
-        const result = await Report.find(filter);
-        if (!result) return res.status(404).send({ message: ERROR_MSG.TRY_AGAIN });
         const { pageSize, pageIndex } = req.query;
         const parsedPageSize = parseInt(pageSize);
         const parsedPageIndex = parseInt(pageIndex);
@@ -62,6 +59,7 @@ export const getReports = async (req, res) => {
 
         const ReportData = await Report.find(filter).skip(skip).limit(limit);
         const ReportDataCount = await Report.count(filter);
+
 
         res.status(200).send({
             data: ReportData,
