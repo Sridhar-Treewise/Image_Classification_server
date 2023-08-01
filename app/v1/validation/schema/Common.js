@@ -20,11 +20,11 @@ export const reportsSchema = Joi.object({
     pageSize: Joi.number().integer().min(1).required(),
     totalCount: Joi.number().integer().optional(),
     pageIndex: Joi.number().integer().min(0).required(),
-    startDate: Joi.number().integer().min(1).optional(),
-    endDate: Joi.number().integer().min(1).optional()
+    startDate: Joi.number().integer().min(0).optional(),
+    endDate: Joi.number().integer().min(0).optional()
         .when("startDate", {
-            is: Joi.exist(),
-            then: Joi.number().greater(Joi.ref("startDate")).optional(),
-            otherwise: Joi.number().optional()
+            is: Joi.exist().not(null),
+            then: Joi.number().greater(Joi.ref("startDate")).optional()
         })
 });
+
