@@ -57,7 +57,7 @@ export const getReports = async (req, res) => {
         const skip = parsedPageIndex * parsedPageSize;
         const limit = parsedPageSize;
 
-        const ReportData = await Report.find(filter).skip(skip).limit(limit);
+        const ReportData = await Report.find(filter).skip(skip).limit(limit).select("-predictionInfo");
         const ReportDataCount = await Report.count(filter);
 
 
