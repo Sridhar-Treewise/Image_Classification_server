@@ -19,11 +19,11 @@ export const paginationSchema = Joi.object({
 export const reportsSchema = Joi.object({
     pageSize: Joi.number().integer().min(1).required(),
     pageIndex: Joi.number().integer().min(0).required(),
-    startDate: Joi.number().integer().min(1).required(),
-    endDate: Joi.number().integer().min(1).required()
+    startDate: Joi.number().integer().min(1).optional(),
+    endDate: Joi.number().integer().min(1).optional()
         .when("startDate", {
             is: Joi.exist(),
-            then: Joi.number().greater(Joi.ref("startDate")).required(),
-            otherwise: Joi.number().required()
+            then: Joi.number().greater(Joi.ref("startDate")).optional(),
+            otherwise: Joi.number().optional()
         })
 });
