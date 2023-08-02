@@ -76,7 +76,7 @@ export const getReports = async (req, res) => {
 export const getReportById = async (req, res) => {
     const id = req.params.id;
     try {
-        const data = await Report.findOne({ _id: id }).select({ _id: 0, vesselId: 0 });
+        const data = await Report.findOne({ _id: id }).select({ _id: 0, vesselId: 0, organization: 0 });
         if (!data) return res.status(404).json({ errorTitle: ERROR_MSG.NO_DETAILS, message: "No records found" });
         res.status(200).send({ data });
     } catch (error) {
