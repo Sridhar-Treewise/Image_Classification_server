@@ -18,6 +18,7 @@ export const paginationSchema = Joi.object({
 
 export const reportsSchema = Joi.object({
     pageSize: Joi.number().integer().min(1).required(),
+    totalCount: Joi.number().integer().optional(),
     pageIndex: Joi.number().integer().min(0).required(),
     startDate: Joi.number().integer().min(0).optional(),
     endDate: Joi.number().integer().min(0).optional()
