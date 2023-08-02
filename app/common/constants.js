@@ -35,6 +35,11 @@ export const DEFECT_DETECTION = {
     EXPORT_EXCEL: "https://defectdetectionrings.azurewebsites.net/excel"
 };
 
+export const DOC_TYPE = {
+    EXCEL: "xls",
+    PDF: "pdf"
+};
+
 // predict
 // input- base64string
 
