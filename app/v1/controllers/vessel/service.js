@@ -3,7 +3,7 @@
 import _ from "lodash";
 import User from "../../models/User.js";
 import { ERROR_MSG } from "../../../config/messages.js";
-import { DEFECT_DETECTION, HTTP_HEADER } from "../../../common/constants.js";
+import { DEFECT_DETECTION, HTTP_HEADER, DOC_TYPE } from "../../../common/constants.js";
 import axios from "axios";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import Report from "../../models/Reports.js";
@@ -57,18 +57,28 @@ export const getReports = async (req, res) => {
         const skip = parsedPageIndex * parsedPageSize;
         const limit = parsedPageSize;
 
-        const ReportData = await Report.find(filter).skip(skip).limit(limit).select("-predictionInfo");
+        const data = await Report.find(filter).skip(skip).limit(limit).select("-predictionInfo");
         const ReportDataCount = await Report.count(filter);
 
 
         res.status(200).send({
-            data: ReportData,
+            data,
             pagingInfo: {
                 totalCount: ReportDataCount,
                 pageIndex: parsedPageIndex,
                 pageSize: parsedPageSize
             }
         });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const getReportById = async (req, res) => {
+    const id = req.params.id;
+    try {
+        const data = await Report.findOne({ _id: id }).select({ _id: 0, vesselId: 0 });
+        if (!data) return res.status(404).json({ errorTitle: ERROR_MSG.NO_DETAILS, message: "No records found" });
+        res.status(200).send({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
@@ -124,7 +134,7 @@ export const generatePredictedImage = (req, res) => {
                 const message = error.response.data.message;
                 res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
             } else if (error.request) {
-                res.status(503).json({ message: "The resource is temporarily unavailable. Please try again later." });
+                res.status(503).json(handleFailedOperation(error.message, ERROR_MSG.SERVICE_NOT_AVAILABLE));
             } else {
                 res.status(500).json(handleFailedOperation(error.message, ERROR_MSG.SOMETHING_WENT));
             }
@@ -172,4 +182,31 @@ export const updateVesselInfo = async (req, res) => {
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
+};
+
+//
+export const exportDocuments = async (req, res) => {
+    const { documentType = "" } = req.query;
+    let URL = "";
+    if (documentType === DOC_TYPE.EXCEL) {
+        URL = DEFECT_DETECTION.EXPORT_EXCEL;
+    } else if (documentType === DOC_TYPE.PDF) {
+        URL = DEFECT_DETECTION.EXPORT_EXCEL;
+    }
+    const predicatedImagePromisePdf = axios.post(URL, req.body, { responseType: "arraybuffer" });
+    predicatedImagePromisePdf.then(response => {
+        const results = response.data;
+        res.status(200).json(results);
+    })
+        .catch(error => {
+            if (error.response) {
+                const message = error.response.data.message;
+                res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
+            } else if (error.request) {
+                res.status(503).json(handleFailedOperation(error.message, ERROR_MSG.SERVICE_NOT_AVAILABLE));
+            } else {
+                res.status(500).json(handleFailedOperation(error.message, ERROR_MSG.SOMETHING_WENT));
+            }
+        });
+    res.status(204);
 };
