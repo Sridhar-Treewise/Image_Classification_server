@@ -82,7 +82,7 @@ export const signUp = async (req, res) => {
                     ...profileDetails,
                     password: hashedPassword,
                     userType: USER_TYPE[0],
-                    offerAdmin: organizationAdmin,
+                    officerAdmin: organizationAdmin,
                     organizationBelongsTo: org._id,
                     vesselDetails: { vessel_name }
                 });
