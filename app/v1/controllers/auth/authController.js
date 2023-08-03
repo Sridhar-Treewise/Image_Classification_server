@@ -30,7 +30,6 @@ export const signIn = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
-
 export const signUp = async (req, res) => {
     const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "", newOrg = false, newOrgName = "" } = req.body;
     const credentials = _.cloneDeep(req.body);
@@ -41,24 +40,12 @@ export const signUp = async (req, res) => {
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
         const orgExists = await Organization.findOne({ company_name }).exec();
-        // If the organization exists and the vessel name matches the user's vessel name,
-        // and the user is not of type organization, return an error
-        if (orgExists && _.get(isExists, "vesselDetails.vessel_name", "") === vessel_name && userType !== USER_TYPE[1]) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS_VESSEL });
-        // If the user is not an organization admin, an organization already exists with given domain,
-        // and the user type is "Organization", return an error
-        if (!organizationAdmin && orgExists && userType === USER_TYPE[1]) {
-            return res.status(400).json({ message: ERROR_MSG.NOT_ALLOWED });
-        }
-        // If the organization exists, check if the vessel name exists within the organization
         if (orgExists) {
+            if (_.get(isExists, "vesselDetails.vessel_name", "") === vessel_name && userType !== USER_TYPE[1]) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS_VESSEL });
+            if (!organizationAdmin && userType === USER_TYPE[1]) return res.status(400).json({ message: ERROR_MSG.NOT_ALLOWED });
             isVesselNameExists = await User.findOne({ organizationBelongsTo: orgExists._id, "vesselDetails.vessel_name": vessel_name }).exec();
+            if (isVesselNameExists) return res.status(400).json({ message: ERROR_MSG.ALREADY_EXISTS_VESSEL });
         }
-        // If the organization exists and the vessel name exists, return a duplication error
-        if (orgExists && isVesselNameExists) {
-            return res.status(400).json({ message: ERROR_MSG.ALREADY_EXISTS_VESSEL });
-        }
-        // If no organization exists and no organization admin is specified,
-        // and the user type is "Organization", create an organization admin
         if (!orgExists && !organizationAdmin && userType === USER_TYPE[1] && newOrg) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = await User.create({ ...profileDetails, userType, password: hashedPassword, designation: DESIGNATION[2] });
@@ -72,7 +59,6 @@ export const signUp = async (req, res) => {
             const token = jwt.sign({ userId: user._id, userType: user.userType }, process.env.JWT_SECRET, { expiresIn: "7d" });
             res.status(201).json({ token });
         }
-        // If the organization exists and the user type is "Vessel", create a vessel user
         if (orgExists && userType === USER_TYPE[0]) {
             const org = await Organization.findOne({ company_name });
             if (org && !org.admins.includes(organizationAdmin)) return res.status(400).json({ message: ERROR_MSG.NO_ADMIN(company_name) });
@@ -98,7 +84,6 @@ export const signUp = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
-
 
 export const adminRegister = async (req, res) => {
     const { email, password } = req.body;
