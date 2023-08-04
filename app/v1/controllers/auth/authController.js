@@ -31,7 +31,7 @@ export const signIn = async (req, res) => {
     }
 };
 export const signUp = async (req, res) => {
-    const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "", newOrg = false, newOrgName = "" } = req.body;
+    const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "", newOrg = false, imo_number = "" } = req.body;
     const credentials = _.cloneDeep(req.body);
     const profileDetails = _.omit(credentials, ["password", "vessel_name", "company_name", "newOrgName"]); // Omit certain fields from the cloned credentials
     const domain = email.split("@")[1];
@@ -70,7 +70,7 @@ export const signUp = async (req, res) => {
                     userType: USER_TYPE[0],
                     officerAdmin: organizationAdmin,
                     organizationBelongsTo: org._id,
-                    vesselDetails: { vessel_name }
+                    vesselDetails: { vessel_name, imo_number }
                 });
             if (!result) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
             const token = jwt.sign({ userId: result._id, userType: result.userType }, process.env.JWT_SECRET, { expiresIn: "7d" });
