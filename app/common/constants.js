@@ -25,7 +25,8 @@ export const ERROR_CODE = {
 };
 export const HTTP_HEADER = {
     headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
+        "Accept-Encoding": "gzip, deflate, br"
     }
 };
 
