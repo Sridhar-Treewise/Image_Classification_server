@@ -200,16 +200,15 @@ export const exportDocuments = async (req, res) => {
         // res.setHeader('Content-Type', contentType);
         res.setHeader('Content-Type', 'application/octet-stream');
         res.send(response.data);
-    })
-        .catch(error => {
-            if (error.response) {
-                const message = error.response.data.message;
-                res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
-            } else if (error.request) {
-                res.status(503).json({ message: ERROR_MSG.SERVICE_NOT_AVAILABLE });
-            } else {
-                res.status(500).json({ message: ERROR_MSG.SOMETHING_WENT });
-            }
-        });
+    }).catch(error => {
+        if (error.response) {
+            const message = error.response.data.message;
+            res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
+        } else if (error.request) {
+            res.status(503).json({ message: ERROR_MSG.SERVICE_NOT_AVAILABLE });
+        } else {
+            res.status(500).json({ message: ERROR_MSG.SOMETHING_WENT });
+        }
+    });
 };
 
