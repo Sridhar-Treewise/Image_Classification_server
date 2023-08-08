@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha app/v1/tests/**/*.js",
+    "start": "NODE_ENV=development node index.js",
     "dev": "npm i &&  NODE_ENV=development nodemon index.js",
     "prod": "npm i && NODE_ENV=production node index.js",
     "local": "npm i &&  NODE_ENV=local nodemon index.js",

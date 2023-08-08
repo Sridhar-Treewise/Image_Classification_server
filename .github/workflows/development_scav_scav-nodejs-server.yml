@@ -23,7 +23,8 @@ jobs:
 
       - name: npm install, Run Development Mode
         run: |
-          npm run dev --if-present
+          npm install
+          npm start --if-present
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
