@@ -1,7 +1,9 @@
 import Joi from "joi";
 
 export const createVesselSchema = Joi.object({
+    fullName: Joi.string().required(),
     email: Joi.string().email().required(),
+    password: Joi.string().min(2).required(),
     phone: Joi.string()
         .pattern(/^[0-9]{10}$/)
         .required(),
