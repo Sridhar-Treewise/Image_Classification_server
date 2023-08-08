@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '18.12.1'
 
-      - name: npm install, build
+      - name: npm install, build, run development
         run: |
           npm run dev --if-present
 
