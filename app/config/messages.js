@@ -2,6 +2,7 @@
 export const ERROR_MSG = {
     ALREADY_EXISTS: "Email already exists, please try different email",
     PROFILE_NOT: "Profile not created, try again",
+    VESSEL_NOT: "Vessel not created, try again",
     SOMETHING_WENT: "Something Went Wrong",
     USER_NOT: "User not found",
     ORG_ADMIN_NOT: "Organization Admin field required for registering",
