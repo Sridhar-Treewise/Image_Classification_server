@@ -31,7 +31,7 @@ export const inspectionImageSchema = Joi.object({
     cyl_oil_consump_Ltr_24hr: Joi.string().required(),
     normal_service_load_in_percent_MCR: Joi.string().required(),
     cylinder_numbers: Joi.number().required(),
-    cylinder: Joi.number().max(100).optional(),
+    cylinder: Joi.string().max(100).optional(),
     image: Joi.string().custom((value, helpers) => {
         if (!value.startsWith("data:image")) {
             return helpers.error("any.invalid");
