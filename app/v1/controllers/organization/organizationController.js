@@ -39,7 +39,7 @@ export const pendingVesselList = async (req, res) => {
     try {
         const result = await User.find({ approvedStatus: false, officerAdmin: id })
             .select("vesselDetails.vessel_name email vesselDetails.imo_number");
-        res.status(200).json(result);
+        res.status(200).json({ data: result });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
