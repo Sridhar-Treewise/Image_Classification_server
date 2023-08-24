@@ -3,6 +3,7 @@
 import Report from "../../models/Reports.js";
 import bcrypt from "bcrypt";
 import User from "../../models/User.js";
+import Organization from "../../models/Organizations.js";
 import { ERROR_MSG } from "../../../config/messages.js";
 export const vesselList = async (req, res) => {
     const id = req.user;
@@ -56,6 +57,9 @@ export const approveRequest = async (req, res) => {
 };
 export const createVessel = async (req, res) => {
     const { vessel_name, email, password, fullName, phone, manufacturer, type_of_engine, vessel_type, cylinder_numbers, imo_number } = req.body;
+    const userId = req.user;
+    const findOrg = await Organization.findOne({ manager: userId });
+
     try {
         const vesselExists = await User.exists({
             $or: [
@@ -66,8 +70,8 @@ export const createVessel = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
         const vesselDetails = { vessel_name, manufacturer, type_of_engine, vessel_type, imo_number };
         const inspectionDetails = { cylinder_numbers };
-        if (vesselExists) return res.status(409).json({ errorTitle: ERROR_MSG.ALREADY_EXISTS });
-        const vessel = await User.create({ email, password: hashedPassword, fullName, phone, vesselDetails, inspectionDetails });
+        if (vesselExists) return res.status(409).json({ errorTitle: ERROR_MSG.EMAIL_VESSEL_EXISTS });
+        const vessel = await User.create({ email, password: hashedPassword, fullName, phone, vesselDetails, inspectionDetails, officerAdmin: userId, organizationBelongsTo: findOrg._id });
         if (!vessel) return res.status(400).json({ errorTitle: ERROR_MSG.VESSEL_NOT });
         res.status(201).json({ message: "Vessel created successfully" });
     } catch (error) {
