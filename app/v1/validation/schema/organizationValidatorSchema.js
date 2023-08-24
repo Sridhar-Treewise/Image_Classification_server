@@ -4,9 +4,6 @@ export const createVesselSchema = Joi.object({
     fullName: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(2).required(),
-    phone: Joi.string()
-        .pattern(/^[0-9]{10}$/)
-        .required(),
     vessel_name: Joi.string().required(),
     imo_number: Joi.number().required(),
     manufacturer: Joi.string().required(),
