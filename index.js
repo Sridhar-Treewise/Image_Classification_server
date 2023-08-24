@@ -49,33 +49,4 @@ app.use(errorHandler);
 connectToDatabase(uri, options, PORT, app);
 
 export { app };
-// not use
-// const cylinderSchema = new mongoose.Schema({
-//   lubrication: {
-//     ring1: String,
-//     ring2: String,
-//     ring3: String,
-//     ring4: String
-//   },
-//   surface: {
-//     ring1: String,
-//     ring2: String,
-//     ring3: String,
-//     ring4: String
-//   },
-//   deposit: {
-//     ring1: String,
-//     ring2: String,
-//     ring3: String,
-//     ring4: String
-//   },
-//   breakage: {
-//     ring1: String,
-//     ring2: String,
-//     ring3: String,
-//     ring4: String
-//   },
-//   image: String,
-//   remark: String
-// });
 
