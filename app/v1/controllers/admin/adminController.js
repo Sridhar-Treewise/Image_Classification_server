@@ -96,7 +96,7 @@ export const dashboardList = async (req, res) => {
     }
 };
 export const restrictUser = async (req, res) => {
-    const { id } = req.query;
+    const { id } = req.body;
     try {
         const findUser = await User.findOne({ _id: id });
         if (findUser.status === true) {
@@ -123,14 +123,15 @@ export const userDetails = async (req, res) => {
     }
 };
 export const updateUser = async (req, res) => {
-    const { fullName, email, phone } = req.body;
+    const { fullName, email, phone, _id = "" } = req.body;
     try {
-        const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { fullName, email, phone } }, { new: true });
+        const update = await User.findOneAndUpdate({ _id }, { $set: { fullName, email, phone } }, { new: true });
         if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
         const data = {
             fullName: update.fullName,
             email: update.email,
-            phone: update.phone
+            phone: update.phone,
+            _id: update._id
         };
         res.status(201).json({ data });
     } catch (error) {
@@ -151,4 +152,11 @@ export const updatePassword = async (req, res) => {
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
+};
+
+
+export const getUserById = async (req, res) => {
+    const { id } = req.params;
+    const findUser = await User.findOne({ _id: id }).select("email fullName phone");
+    res.status(200).json({ data: findUser });
 };
