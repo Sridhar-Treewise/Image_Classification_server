@@ -20,7 +20,9 @@ export const ERROR_MSG = {
     FORBIDDEN: "You don't have permission to access this resource",
     FAILED_SAVE: (reason = "") => `Failed to save data :${reason}`,
     SERVICE_NOT_AVAILABLE: "The resource is temporarily unavailable. Please try again later.",
-    EMAIL_VESSEL_EXISTS: "Email or Vessel Name Already Exists"
+    EMAIL_VESSEL_EXISTS: "Email or Vessel Name Already Exists",
+    INCORRECT_PSW: "Incorrect Password",
+    PASSWORD_MISMATCH: "Passwords don't match"
 
 };
 

@@ -94,4 +94,60 @@ export const dashboardList = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
-
+export const restrictUser = async (req, res) => {
+    const { id } = req.query;
+    try {
+        const findUser = await User.findOne({ _id: id });
+        if (findUser.status === true) {
+            let updatedStatus = await User.findOneAndUpdate({ _id: id }, { $set: { status: false } }, { new: true });
+        } else {
+            let updatedStatus = await User.findOneAndUpdate({ _id: id }, { $set: { status: true } }, { new: true });
+        }
+        res.status(200).json({ message: "Status updated successfully" });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const userDetails = async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.query.id }).select("fullName email phone");
+        const data = {
+            fullName: user.fullName,
+            email: user.email,
+            phone: user.phone
+        };
+        res.status(200).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const updateUser = async (req, res) => {
+    const { fullName, email, phone } = req.body;
+    try {
+        const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { fullName, email, phone } }, { new: true });
+        if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        const data = {
+            fullName: update.fullName,
+            email: update.email,
+            phone: update.phone
+        };
+        res.status(201).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const updatePassword = async (req, res) => {
+    const { oldPassword, password, confirmPassword } = req.body;
+    const hashedPassword = await bcrypt.hash(oldPassword, 10);
+    try {
+        const findUser = await User.findOne({ _id: req.query.id });
+        const isPassword = await bcrypt.compare(findUser.password, hashedPassword);
+        if (!isPassword) return res.status(400).send({ message: ERROR_MSG.INCORRECT_PSW });
+        if (password !== confirmPassword) return res.status(400).send({ message: ERROR_MSG.PASSWORD_MISMATCH });
+        const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { password } }, { new: true });
+        if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        res.status(201).json({ message: "Password updated successfully" });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};

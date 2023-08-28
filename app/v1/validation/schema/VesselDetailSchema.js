@@ -88,3 +88,8 @@ export const predictedDataSchema = Joi.object({
         }, "base64 image")
     }).required()
 });
+export const passwordSchema = Joi.object({
+    oldPassword: Joi.string().min(2).required(),
+    password: Joi.string().min(2).required(),
+    confirmPassword: Joi.string().min(2).required()
+});
