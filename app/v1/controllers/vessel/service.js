@@ -128,7 +128,7 @@ export const generatePredictedImage = (req, res) => {
             if (!result) {
                 return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
             }
-            res.status(201).json({ data: { predictionDetails: { ...results, cylinder }, updatedResult: result.inspectionDetails } });
+            res.status(201).json({ data: { predictionDetails: { results, cylinder }, updatedResult: result.inspectionDetails } });
         })
         .catch(error => {
             if (error.response) {

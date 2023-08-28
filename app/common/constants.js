@@ -15,7 +15,7 @@ export const SUBSCRIPTION_MODEL = {
 
 export const DESIGNATION = [
     "CHIEF_OFFICER",
-    "OFFICER",
+    "FLEET_MANAGER",
     "CREW"
 ];
 export const ERROR_CODE = {

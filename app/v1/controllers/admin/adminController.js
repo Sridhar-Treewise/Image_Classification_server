@@ -40,13 +40,21 @@ export const usersList = async (req, res) => {
         const users = await User.find({ userType: { $ne: "Admin" } })
             .skip(skip)
             .limit(limit)
-            .select("-password")
+            .select("fullName email status userType")
             .exec();
 
         const totalCount = await User.countDocuments({ userType: { $ne: "Admin" } });
+        const responseData = users.map(user => {
+            return {
+                fullName: user.fullName,
+                email: user.email,
+                status: user.status,
+                userType: user.userType
+            };
+        });
 
         const paginationResult = {
-            data: users,
+            data: responseData,
             pageInfo: {
                 pageSize: parsedPageSize,
                 pageIndex: parsedPageIndex,
@@ -60,3 +68,30 @@ export const usersList = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+
+export const dashboardList = async (req, res) => {
+    try {
+        const condClause = {
+            userType: "Organization",
+            designation: "FLEET_MANAGER"
+        };
+        const organizations = await User.countDocuments({ userType: "Organization" });
+        const totalUsers = await User.countDocuments({ userType: { $ne: "Admin" } });
+        const vessels = await User.countDocuments({ userType: "Vessel" });
+        const reports = await Report.countDocuments({});
+        const fleetManagers = await User.countDocuments(condClause);
+        const cylinderImageCount = 0;
+        const data = {
+            organizations,
+            totalUsers,
+            vessels,
+            reports,
+            cylinderImageCount,
+            fleetManagers
+        };
+        res.status(200).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+
