@@ -40,13 +40,21 @@ export const usersList = async (req, res) => {
         const users = await User.find({ userType: { $ne: "Admin" } })
             .skip(skip)
             .limit(limit)
-            .select("-password")
+            .select("fullName email status userType")
             .exec();
 
         const totalCount = await User.countDocuments({ userType: { $ne: "Admin" } });
+        const responseData = users.map(user => {
+            return {
+                fullName: user.fullName,
+                email: user.email,
+                status: user.status,
+                userType: user.userType
+            };
+        });
 
         const paginationResult = {
-            data: users,
+            data: responseData,
             pageInfo: {
                 pageSize: parsedPageSize,
                 pageIndex: parsedPageIndex,
