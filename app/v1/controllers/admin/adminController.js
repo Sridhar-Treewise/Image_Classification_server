@@ -40,12 +40,12 @@ export const usersList = async (req, res) => {
         const users = await User.find({ userType: { $ne: "Admin" } })
             .skip(skip)
             .limit(limit)
-            .select("fullName email status userType")
-            .exec();
+            .select("fullName email status userType");
 
         const totalCount = await User.countDocuments({ userType: { $ne: "Admin" } });
         const responseData = users.map(user => {
             return {
+                _id: user._id,
                 fullName: user.fullName,
                 email: user.email,
                 status: user.status,
