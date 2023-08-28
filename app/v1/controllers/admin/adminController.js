@@ -81,7 +81,7 @@ export const dashboardList = async (req, res) => {
             cylinderImageCount,
             fleetMangers
         };
-        res.status(200).json(data);
+        res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
