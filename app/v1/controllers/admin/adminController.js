@@ -69,19 +69,19 @@ export const dashboardList = async (req, res) => {
         };
         const organizations = await User.countDocuments({ userType: "Organization" });
         const totalUsers = await User.countDocuments({ userType: { $ne: "Admin" } });
-        const Vessels = await User.countDocuments({ userType: "Vessel" });
+        const vessels = await User.countDocuments({ userType: "Vessel" });
         const reports = await Report.countDocuments({});
-        const fleetMangers = await User.countDocuments(condClause);
+        const fleetManagers = await User.countDocuments(condClause);
         const cylinderImageCount = 0;
         const data = {
             organizations,
             totalUsers,
-            Vessels,
+            vessels,
             reports,
             cylinderImageCount,
-            fleetMangers
+            fleetManagers
         };
-        res.status(200).json(data);
+        res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
