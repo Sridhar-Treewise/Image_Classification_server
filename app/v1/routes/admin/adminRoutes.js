@@ -1,5 +1,5 @@
 import express from "express";
-import { passwordValidation } from "../../validation/VesselValidator.js";
+import { passwordValidation } from "../../validation/AdminValidator.js";
 import { createOrg, dashboardList, usersList, restrictUser, userDetails, updateUser, updatePassword } from "../../controllers/admin/adminController.js";
 
 
@@ -11,6 +11,6 @@ router.get("/dashboard", dashboardList);
 router.post("/restrict-user", restrictUser);
 router.get("/user-details", userDetails);
 router.put("/update-user", updateUser);
-router.put("/update-password", updatePassword);
+router.put("/update-password", passwordValidation, updatePassword);
 
 export default router;
