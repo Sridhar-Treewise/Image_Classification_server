@@ -6,6 +6,7 @@ import Report from "../../models/Reports.js";
 import _ from "lodash";
 import { ERROR_MSG } from "../../../config/messages.js";
 import { USER_TYPE } from "../../../common/constants.js";
+import Organization from "../../models/Organizations.js";
 
 export const createOrg = async (req, res) => {
     const { email, password, vessel_name } = req.body;
@@ -75,7 +76,7 @@ export const dashboardList = async (req, res) => {
             userType: "Organization",
             designation: "FLEET_MANAGER"
         };
-        const organizations = await User.countDocuments({ userType: "Organization" });
+        const organizations = await Organization.countDocuments();
         const totalUsers = await User.countDocuments({ userType: { $ne: "Admin" } });
         const vessels = await User.countDocuments({ userType: "Vessel" });
         const reports = await Report.countDocuments({});
