@@ -1,5 +1,5 @@
 import { validator } from "../../utils/validators.js";
-import { inspectionDetailsSchema, inspectionImageSchema, predictedDataSchema, vesselDetailsSchema, passwordSchema } from "./schema/VesselDetailSchema.js";
+import { inspectionDetailsSchema, inspectionImageSchema, predictedDataSchema, vesselDetailsSchema } from "./schema/VesselDetailSchema.js";
 import { paginationSchema, reportsSchema } from "../validation/schema/Common.js";
 import { queryValidator } from "../validation/validator.js";
 
@@ -26,7 +26,4 @@ export const PaginationValidate = (req, res, next) => {
 
 export const reportValidation = (req, res, next) => {
     queryValidator(reportsSchema, req.query, next);
-};
-export const passwordValidation = (req, res, next) => {
-    validator(passwordSchema, req.query, next);
 };

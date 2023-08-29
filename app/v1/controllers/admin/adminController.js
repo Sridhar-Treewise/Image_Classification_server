@@ -100,9 +100,9 @@ export const restrictUser = async (req, res) => {
     try {
         const findUser = await User.findOne({ _id: id });
         if (findUser.status === true) {
-            let updatedStatus = await User.findOneAndUpdate({ _id: id }, { $set: { status: false } }, { new: true });
+            await User.findOneAndUpdate({ _id: id }, { $set: { status: false } }, { new: true });
         } else {
-            let updatedStatus = await User.findOneAndUpdate({ _id: id }, { $set: { status: true } }, { new: true });
+            await User.findOneAndUpdate({ _id: id }, { $set: { status: true } }, { new: true });
         }
         res.status(200).json({ message: "Status updated successfully" });
     } catch (error) {
@@ -140,13 +140,13 @@ export const updateUser = async (req, res) => {
 };
 export const updatePassword = async (req, res) => {
     const { oldPassword, password, confirmPassword } = req.body;
-    const hashedPassword = await bcrypt.hash(oldPassword, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     try {
         const findUser = await User.findOne({ _id: req.query.id });
-        const isPassword = await bcrypt.compare(findUser.password, hashedPassword);
+        const isPassword = await bcrypt.compare(oldPassword, findUser.password);
         if (!isPassword) return res.status(400).send({ message: ERROR_MSG.INCORRECT_PSW });
         if (password !== confirmPassword) return res.status(400).send({ message: ERROR_MSG.PASSWORD_MISMATCH });
-        const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { password } }, { new: true });
+        const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { password: hashedPassword } }, { new: true });
         if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
         res.status(201).json({ message: "Password updated successfully" });
     } catch (error) {
