@@ -138,13 +138,11 @@ export const updateUser = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+
 export const updatePassword = async (req, res) => {
-    const { oldPassword, password, confirmPassword } = req.body;
+    const { password, confirmPassword } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     try {
-        const findUser = await User.findOne({ _id: req.query.id });
-        const isPassword = await bcrypt.compare(oldPassword, findUser.password);
-        if (!isPassword) return res.status(400).send({ message: ERROR_MSG.INCORRECT_PSW });
         if (password !== confirmPassword) return res.status(400).send({ message: ERROR_MSG.PASSWORD_MISMATCH });
         const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { password: hashedPassword } }, { new: true });
         if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });

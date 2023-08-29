@@ -2,6 +2,7 @@
 /* eslint-disable camelcase */
 
 import _ from "lodash";
+import bcrypt from "bcrypt";
 import User from "../../models/User.js";
 import { ERROR_MSG } from "../../../config/messages.js";
 import { DEFECT_DETECTION, HTTP_HEADER, DOC_TYPE } from "../../../common/constants.js";
@@ -212,3 +213,19 @@ export const exportDocuments = async (req, res) => {
     });
 };
 
+
+export const changePassword = async (req, res) => {
+    const { oldPassword, password, confirmPassword } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    try {
+        const findUser = await User.findOne({ _id: req.query.id });
+        const isPassword = await bcrypt.compare(oldPassword, findUser.password);
+        if (!isPassword) return res.status(400).send({ message: ERROR_MSG.INCORRECT_PSW });
+        if (password !== confirmPassword) return res.status(400).send({ message: ERROR_MSG.PASSWORD_MISMATCH });
+        const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { password: hashedPassword } }, { new: true });
+        if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        res.status(201).json({ message: "Password updated successfully" });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
