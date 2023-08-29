@@ -140,13 +140,13 @@ export const updateUser = async (req, res) => {
 };
 
 export const updatePassword = async (req, res) => {
-    const { password, confirmPassword } = req.body;
+    const { password, confirmPassword, id } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     try {
         if (password !== confirmPassword) return res.status(400).send({ message: ERROR_MSG.PASSWORD_MISMATCH });
-        const update = await User.findOneAndUpdate({ _id: req.query.id }, { $set: { password: hashedPassword } }, { new: true });
+        const update = await User.findOneAndUpdate({ _id: id }, { $set: { password: hashedPassword } }, { new: true });
         if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
-        res.status(201).json({ message: "Password updated successfully" });
+        res.status(200).json({ message: "Password updated successfully" });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
@@ -157,4 +157,42 @@ export const getUserById = async (req, res) => {
     const { id } = req.params;
     const findUser = await User.findOne({ _id: id }).select("email fullName phone");
     res.status(200).json({ data: findUser });
+};
+
+
+export const vesselList = async (req, res) => {
+    const { pageSize, pageIndex } = req.query;
+    const parsedPageSize = parseInt(pageSize);
+    const parsedPageIndex = parseInt(pageIndex);
+
+    // Calculate skip value
+    const skip = parsedPageIndex * parsedPageSize;
+    const limit = parsedPageSize;
+
+    try {
+        const users = await User.find({ userType: "Vessel" })
+            .skip(skip)
+            .limit(limit)
+            .select("-password -email -fullName")
+            .populate("organizationBelongsTo", "company_name")
+            .populate("officerAdmin", "fullName")
+            .select("status userType");
+
+        const totalCount = await User.countDocuments({ userType: "Vessel" });
+
+
+        const paginationResult = {
+            data: users,
+            pageInfo: {
+                pageSize: parsedPageSize,
+                pageIndex: parsedPageIndex,
+                totalCount
+            }
+        };
+
+        res.status(200).json(paginationResult);
+    } catch (error) {
+        // Handle any errors that may occur during the query
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
 };

@@ -1,5 +1,5 @@
 import express from "express";
-import { createOrg, dashboardList, usersList, getUserById, restrictUser, userDetails, updateUser, updatePassword } from "../../controllers/admin/adminController.js";
+import { createOrg, dashboardList, usersList, getUserById, restrictUser, userDetails, updateUser, updatePassword, vesselList } from "../../controllers/admin/adminController.js";
 import { passwordValidation } from "../../validation/AdminValidator.js";
 
 
@@ -13,5 +13,7 @@ router.post("/restrict-user", restrictUser);
 router.get("/user-details", userDetails);
 router.put("/update-user", updateUser);
 router.put("/update-password", passwordValidation, updatePassword);
+router.get("/vessel-all", vesselList);
+
 
 export default router;
