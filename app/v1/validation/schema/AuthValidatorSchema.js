@@ -34,11 +34,19 @@ export const signUpSchema = Joi.object({
     company_name: Joi.string().required(),
     email: Joi.string().email().required(),
     fullName: Joi.string().required(),
-    vessel_name: Joi.string().required(),
+    vessel_name: Joi.string().allow("").when("newOrg", {
+        is: true,
+        then: Joi.optional(),
+        otherwise: Joi.required()
+    }),
     password: Joi.string().min(2).required(),
     confirmPassword: Joi.string().min(2).required(),
     userType: Joi.string().min(2).required(),
-    imo_number: Joi.string().min(2).required(),
+    imo_number: Joi.string().allow("").when("newOrg", {
+        is: true,
+        then: Joi.optional(),
+        otherwise: Joi.required()
+    }),
     newOrg: Joi.boolean().optional(),
     organizationAdmin: Joi.string().allow("").when("userType", {
         is: "Organization",

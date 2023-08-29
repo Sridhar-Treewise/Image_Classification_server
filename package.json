@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "mocha app/v1/tests/**/*.js",
+    "build": "node index.js",
     "dev": "npm i &&  NODE_ENV=development nodemon index.js",
     "prod": "npm i && NODE_ENV=production node index.js",
     "local": "npm i &&  NODE_ENV=local nodemon index.js",
@@ -46,7 +46,7 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "mocha": "^10.2.0",
-    "nodemon": "^3.0.1",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1"
   }
 }

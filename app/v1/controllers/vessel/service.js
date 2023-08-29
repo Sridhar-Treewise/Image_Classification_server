@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable camelcase */
 
 import _ from "lodash";
@@ -127,7 +128,7 @@ export const generatePredictedImage = (req, res) => {
             if (!result) {
                 return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
             }
-            res.status(201).json({ data: { predictionDetails: { ...results, cylinder }, updatedResult: result.inspectionDetails } });
+            res.status(201).json({ data: { predictionDetails: { results, cylinder }, updatedResult: result.inspectionDetails } });
         })
         .catch(error => {
             if (error.response) {
@@ -184,7 +185,7 @@ export const updateVesselInfo = async (req, res) => {
     }
 };
 
-//
+
 export const exportDocuments = async (req, res) => {
     const { documentType = "" } = req.query;
     let URL = "";
@@ -193,20 +194,21 @@ export const exportDocuments = async (req, res) => {
     } else if (documentType === DOC_TYPE.PDF) {
         URL = DEFECT_DETECTION.EXPORT_EXCEL;
     }
-    const predicatedImagePromisePdf = axios.post(URL, req.body, { responseType: "arraybuffer" });
-    predicatedImagePromisePdf.then(response => {
-        const results = response.data;
-        res.status(200).json(results);
-    })
-        .catch(error => {
-            if (error.response) {
-                const message = error.response.data.message;
-                res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
-            } else if (error.request) {
-                res.status(503).json(handleFailedOperation(error.message, ERROR_MSG.SERVICE_NOT_AVAILABLE));
-            } else {
-                res.status(500).json(handleFailedOperation(error.message, ERROR_MSG.SOMETHING_WENT));
-            }
-        });
-    res.status(204);
+    const exportDocApi = axios.post(URL, req.body, HTTP_HEADER.headers);
+    exportDocApi.then(response => {
+        // const contentType = documentType === DOC_TYPE.EXCEL ? 'application/vnd.ms-excel' : 'application/pdf';
+        // res.setHeader('Content-Type', contentType);
+        res.setHeader('Content-Type', 'application/octet-stream');
+        res.send(response.data);
+    }).catch(error => {
+        if (error.response) {
+            const message = error.response.data.message;
+            res.status(200).json(handleFailedOperation(message, ERROR_MSG.SOMETHING_WENT));
+        } else if (error.request) {
+            res.status(503).json({ message: ERROR_MSG.SERVICE_NOT_AVAILABLE });
+        } else {
+            res.status(500).json({ message: ERROR_MSG.SOMETHING_WENT });
+        }
+    });
 };
+

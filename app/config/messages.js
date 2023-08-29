@@ -2,6 +2,7 @@
 export const ERROR_MSG = {
     ALREADY_EXISTS: "Email already exists, please try different email",
     PROFILE_NOT: "Profile not created, try again",
+    VESSEL_NOT: "Vessel not created, try again",
     SOMETHING_WENT: "Something Went Wrong",
     USER_NOT: "User not found",
     ORG_ADMIN_NOT: "Organization Admin field required for registering",
@@ -18,7 +19,10 @@ export const ERROR_MSG = {
     PAYLOAD_INVALID: "Invalid Payload",
     FORBIDDEN: "You don't have permission to access this resource",
     FAILED_SAVE: (reason = "") => `Failed to save data :${reason}`,
-    SERVICE_NOT_AVAILABLE: "The resource is temporarily unavailable. Please try again later."
+    SERVICE_NOT_AVAILABLE: "The resource is temporarily unavailable. Please try again later.",
+    EMAIL_VESSEL_EXISTS: "Email or Vessel Name Already Exists",
+    INCORRECT_PSW: "Incorrect Password",
+    PASSWORD_MISMATCH: "Passwords don't match"
 
 };
 

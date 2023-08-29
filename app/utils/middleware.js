@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 import jwt from "jsonwebtoken";
-// import User from "../v1/models/User.js";
+import User from "../v1/models/User.js";
 // import { ERROR_MSG } from "../config/messages.js";
 import { ERROR_CODE } from "../common/constants.js";
 import { ERROR_MSG } from "../config/messages.js";
@@ -20,9 +20,9 @@ export const verifyToken = async (req, res, next) => {
                 .json({ message: "Token has expired", errorCode: ERROR_CODE.JWT_TOKEN_EXPIRED });
         }
         const { userId = "", userType = "" } = decodedToken;
-        // const user = await User.findOne({ _id: userId });
-        // if (!user) return res.status(404).json({ message: ERROR_MSG.USER_NOT });
-        // if (!user.status) return res.status(401).json({ message: "User blocked from accessing resources" });
+        const user = await User.findOne({ _id: userId });
+        if (!user) return res.status(404).json({ message: ERROR_MSG.USER_NOT });
+        if (!user.status) return res.status(401).json({ message: "User blocked from accessing resources" });
         req.user = userId;
         req.userType = userType;
         next();

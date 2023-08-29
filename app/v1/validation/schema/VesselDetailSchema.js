@@ -31,7 +31,7 @@ export const inspectionImageSchema = Joi.object({
     cyl_oil_consump_Ltr_24hr: Joi.string().required(),
     normal_service_load_in_percent_MCR: Joi.string().required(),
     cylinder_numbers: Joi.number().required(),
-    cylinder: Joi.number().max(100).optional(),
+    cylinder: Joi.string().max(100).optional(),
     image: Joi.string().custom((value, helpers) => {
         if (!value.startsWith("data:image")) {
             return helpers.error("any.invalid");
@@ -67,13 +67,13 @@ export const predictedDataSchema = Joi.object({
     cyl_oil_Type: Joi.string().min(2).required(),
     cyl_oil_consump_Ltr_24hr: Joi.string().required(),
     normal_service_load_in_percent_MCR: Joi.string().required(),
-    cylinder_numbers: Joi.number().optional(),
+    cylinder_numbers: Joi.number().required(),
     predictionInfo: Joi.object({
         brk: Joi.object().optional(),
         dep: Joi.object().optional(),
         lub: Joi.object().optional(),
         surf: Joi.object().optional(),
-        cylinder: Joi.number().required(),
+        cylinder: Joi.number().required(), // current cylinder
         image: Joi.string().custom((value, helpers) => {
             if (!value.startsWith("data:image")) {
                 return helpers.error("any.invalid");
@@ -87,4 +87,10 @@ export const predictedDataSchema = Joi.object({
             return value;
         }, "base64 image")
     }).required()
+});
+// Remove
+export const passwordSchema = Joi.object({
+    oldPassword: Joi.string().min(2).required(),
+    password: Joi.string().min(2).required(),
+    confirmPassword: Joi.string().min(2).required()
 });

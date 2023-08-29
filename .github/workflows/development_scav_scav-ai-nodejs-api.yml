@@ -1,12 +1,12 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - detection-server-production
+name: Build and deploy Node.js app to Azure Web App - scav-ai-nodejs-api
 
 on:
   push:
     branches:
-      - main
+      - DEVELOPMENT_SCAV
   workflow_dispatch:
 
 jobs:
@@ -16,6 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
@@ -23,8 +31,8 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install
-          
+          npm ci
+          # Your build and test commands here
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -49,7 +57,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'detection-server-production'
+          app-name: 'scav-ai-nodejs-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D8350FFB522044E7AE9C3A71CDD42AF8 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12CD76E656D54FBBA67C17CFE09B7372 }}
           package: .
