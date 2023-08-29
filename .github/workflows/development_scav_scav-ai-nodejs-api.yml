@@ -16,14 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Cache node_modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
@@ -31,8 +23,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm ci
-          # Your build and test commands here
+          npm install
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
@@ -59,5 +50,5 @@ jobs:
         with:
           app-name: 'scav-ai-nodejs-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12CD76E656D54FBBA67C17CFE09B7372 }}
+          publish-profile: ${{secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12CD76E656D54FBBA67C17CFE09B7372}}
           package: .
