@@ -62,7 +62,7 @@ const userSchema = new mongoose.Schema({
         endDate: { type: Date },
         transactionId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
+            ref: "Transaction"
         }
     }
 });

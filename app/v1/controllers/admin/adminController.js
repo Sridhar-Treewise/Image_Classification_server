@@ -10,16 +10,16 @@ import Organization from "../../models/Organizations.js";
 
 export const createOrg = async (req, res) => {
     const { email, password, vessel_name } = req.body;
-    const credentials = _.cloneDeep(req.body)
-    const profileDetails = _.omit(credentials, ['password']);
+    const credentials = _.cloneDeep(req.body);
+    const profileDetails = _.omit(credentials, ["password"]);
     try {
-        const isExists = await Auth.findOne({ email: email });
+        const isExists = await Auth.findOne({ email });
         if (isExists) return res.status(409).send(ERROR_MSG.ALREADY_EXISTS);
         const hashedPassword = await bcrypt.hash(password, 10);
         const result = await Auth.create({ email, password: hashedPassword });
         if (result) {
             const profile = await User.create({ ...profileDetails, userType: USER_TYPE.ORGANISATION });
-            if (!profile) return res.status(400).send(ERROR_MSG.PROFILE_NOT)
+            if (!profile) return res.status(400).send(ERROR_MSG.PROFILE_NOT);
         }
         const token = jwt.sign({ userId: result._id, email }, process.env.JWT_SECRET, { expiresIn: "2h" });
         res.status(201).json(token);
@@ -152,7 +152,6 @@ export const updatePassword = async (req, res) => {
     }
 };
 
-
 export const getUserById = async (req, res) => {
     const { id } = req.params;
     const findUser = await User.findOne({ _id: id }).select("email fullName phone");
@@ -195,4 +194,13 @@ export const vesselList = async (req, res) => {
         // Handle any errors that may occur during the query
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
+};
+
+export const getVesselById = async (req, res) => {
+    const { id } = req.params;
+    const vessel = await User.findOne({ _id: id })
+        .select("-password -email -fullName -approvedStatus -status -phone -userType -designation")
+        .populate("organizationBelongsTo", "company_name -_id")
+        .populate("officerAdmin", "fullName");
+    res.status(200).json({ data: vessel });
 };
