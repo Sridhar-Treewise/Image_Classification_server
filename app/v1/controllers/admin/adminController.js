@@ -204,3 +204,44 @@ export const getVesselById = async (req, res) => {
         .populate("officerAdmin", "fullName");
     res.status(200).json({ data: vessel });
 };
+
+export const orgList = async (req, res) => {
+    const { pageSize, pageIndex } = req.query;
+    const parsedPageSize = parseInt(pageSize);
+    const parsedPageIndex = parseInt(pageIndex);
+
+    // Calculate skip value
+    const skip = parsedPageIndex * parsedPageSize;
+    const limit = parsedPageSize;
+
+    try {
+        const org = await Organization.find()
+            .select("-admins")
+            .skip(skip)
+            .limit(limit)
+            .populate("manager", "fullName");
+
+        const totalCount = await Organization.countDocuments();
+
+
+        const response = {
+            data: org,
+            pageInfo: {
+                pageSize: parsedPageSize,
+                pageIndex: parsedPageIndex,
+                totalCount
+            }
+        };
+
+        res.status(200).json(response);
+    } catch (error) {
+        // Handle any errors that may occur during the query
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+
+export const getOrgById = async (req, res) => {
+    const { id } = req.params;
+    const org = await Organization.findOne({ _id: id }).populate("manager", "fullName");
+    res.status(200).json({ data: org });
+};
