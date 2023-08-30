@@ -32,7 +32,6 @@ export const signIn = async (req, res) => {
 };
 export const signUp = async (req, res) => {
     const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "", newOrg = false, imo_number = "", cylinder_numbers = 1 } = req.body;
-    console.log("1", req.body);
     const credentials = _.cloneDeep(req.body);
     const profileDetails = _.omit(credentials, ["password", "vessel_name", "company_name", "newOrgName"]); // Omit certain fields from the cloned credentials
     const domain = email.split("@")[1];
