@@ -242,6 +242,6 @@ export const orgList = async (req, res) => {
 
 export const getOrgById = async (req, res) => {
     const { id } = req.params;
-    const org = await Organization.findOne({ _id: id }).populate("manager", "fullName");
+    const org = await Organization.findOne({ _id: id }).populate("manager", "fullName").select("-admins");
     res.status(200).json({ data: org });
 };
