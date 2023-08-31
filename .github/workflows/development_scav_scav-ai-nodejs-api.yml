@@ -54,7 +54,7 @@ jobs:
           package: .
       - name: Check if Node.js server is running
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.deploy-to-webapp.outputs.webapp-url }})
+          response=$(curl -s -o /dev/null -w "%{http_code}" "${{ steps.deploy-to-webapp.outputs.webapp-url }}/api/no-auth/ping")
           if [ $response -eq 200 ]; then
             echo "Node.js server is running successfully!"
           else
