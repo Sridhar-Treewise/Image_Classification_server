@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "node index.js",
+    "build": "NODE_ENV=production && node index.js",
     "dev": "npm i &&  NODE_ENV=development nodemon index.js",
     "prod": "npm i && NODE_ENV=production node index.js",
     "local": "npm i &&  NODE_ENV=local nodemon index.js",
