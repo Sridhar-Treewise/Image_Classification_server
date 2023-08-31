@@ -19,21 +19,17 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
-          node-version: '14.x'
+          node-version: '18.x'
 
       - name: npm install, build, and test
         run: |
           npm install
 
-      - name: Compress node_modules
-        run: |
-          zip -r node_modules.zip node_modules
-
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
-          name: node-modules-artifact
-          path: node_modules.zip
+          name: node-app
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,11 +42,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
-          name: node-modules-artifact
-
-      - name: Unzip node_modules
-        run: |
-          unzip -q node_modules.zip -d node_modules
+          name: node-app
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
