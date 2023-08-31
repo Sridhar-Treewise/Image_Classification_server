@@ -52,3 +52,12 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12CD76E656D54FBBA67C17CFE09B7372}}
           package: .
+      - name: Check if Node.js server is running
+        run: |
+          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ steps.deploy-to-webapp.outputs.webapp-url }})
+          if [ $response -eq 200 ]; then
+            echo "Node.js server is running successfully!"
+          else
+            echo "Node.js server is not running. HTTP response code: $response"
+            exit 1
+          fi
