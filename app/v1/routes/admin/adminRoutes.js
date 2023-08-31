@@ -1,10 +1,9 @@
 import express from "express";
-import {
-    createOrg, dashboardList, usersList, getUserById, restrictUser, userDetails,
-    updateUser, updatePassword, vesselList, getVesselById, orgList, getOrgById
-} from "../../controllers/admin/adminController.js";
+import { dashboardList } from "../../controllers/admin/adminController.js";
+import { createOrg, orgList, getOrgById, updateOrg } from "../../controllers/admin/orgManagementController.js";
+import { usersList, getUserById, restrictUser, userDetails, updateUser, updatePassword } from "../../controllers/admin/userManagementController.js";
+import { vesselList, getVesselById } from "../../controllers/admin/vesselManagementController.js";
 import { passwordValidation } from "../../validation/AdminValidator.js";
-
 
 const router = express.Router();
 
@@ -20,5 +19,6 @@ router.get("/vessel-all", vesselList);
 router.get("/vessel/:id", getVesselById);
 router.get("/organizations", orgList);
 router.get("/organizations/:id", getOrgById);
+router.put("/update-org", updateOrg);
 
 export default router;
