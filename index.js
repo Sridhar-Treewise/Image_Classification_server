@@ -35,8 +35,6 @@ app.use(logger("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false }));
 
-// Health check
-app.get("/ping", (req, res) => res.status(200).json({ pong: true }));
 
 // Routes
 app.use("/api/v1", router);

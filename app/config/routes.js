@@ -9,4 +9,8 @@ const router = express.Router();
 router.use("/no-auth", authRoutes);
 router.use("/auth", verifyToken, serviceRoutes);
 
+// Health check
+router.get("/ping", (req, res) => res.status(200).json({ pong: true }));
+
+
 export default router;
