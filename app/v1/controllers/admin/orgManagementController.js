@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 import bcrypt from "bcrypt";
@@ -31,16 +32,20 @@ export const createOrg = async (req, res) => {
 
 
 export const orgList = async (req, res) => {
-    const { pageSize, pageIndex } = req.query;
+    const { pageSize, pageIndex, company_name } = req.query;
     const parsedPageSize = parseInt(pageSize);
     const parsedPageIndex = parseInt(pageIndex);
 
     // Calculate skip value
     const skip = parsedPageIndex * parsedPageSize;
     const limit = parsedPageSize;
+    const filterConditions = {};
+    if (company_name) {
+        filterConditions.company_name = company_name;
+    }
 
     try {
-        const org = await Organization.find()
+        const org = await Organization.find(filterConditions)
             .select("-admins")
             .skip(skip)
             .limit(limit)
