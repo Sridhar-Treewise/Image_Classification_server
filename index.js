@@ -35,14 +35,15 @@ app.use(logger("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false }));
 
+// Health check
+app.get("/ping", (req, res) => res.status(200).json({ pong: true }));
+
 // Routes
 app.use("/api/v1", router);
 
 if (environment === "development") {
   app.post("/create", adminRegister);
 }
-// Health check
-app.get("/ping", (req, res) => res.status(200).json({ pong: true }));
 
 
 // Register the error handling middleware and not found middleware
