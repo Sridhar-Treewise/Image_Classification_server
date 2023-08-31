@@ -12,24 +12,28 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
       - uses: actions/checkout@v2
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: '18.x'
-
-      - name: npm install, build, and test
+          node-version: '14.x'
+          
+      - name: Cache Node.js modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+            
+      - name: Install dependencies, build, and test
         run: |
-          npm install
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: node-app
-          path: .
+          npm ci
+          npm run build
+          npm test
 
   deploy:
     runs-on: ubuntu-latest
@@ -39,22 +43,18 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: node-app
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'scav-ai-nodejs-api'
           slot-name: 'Production'
-          publish-profile: ${{secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12CD76E656D54FBBA67C17CFE09B7372}}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12CD76E656D54FBBA67C17CFE09B7372 }}
           package: .
+
       - name: Check if Node.js server is running
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" "${{ steps.deploy-to-webapp.outputs.webapp-url }}/api/no-auth/ping")
+          response=$(curl -s -o /dev/null -w "%{http_code}" "${{ steps.deploy-to-webapp.outputs.webapp-url }}/ping")
           if [ $response -eq 200 ]; then
             echo "Node.js server is running successfully!"
           else

@@ -42,7 +42,8 @@ if (environment === "development") {
   app.post("/create", adminRegister);
 }
 // Health check
-app.get("/api/no-auth/ping", (req, res) => res.json({ pong: true }));
+app.get("/ping", (req, res) => res.status(200).json({ pong: true }));
+
 
 // Register the error handling middleware and not found middleware
 app.use(notFoundHandler);
