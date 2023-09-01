@@ -17,10 +17,10 @@ const environment = process.env.NODE_ENV || "development";
 // Caching
 // clustering
 // connection pool
-// validate, body, query, params
-// success failed operation
+// validate, body, query, params [+]
+// success failed operation [+]
 // do proper planning
-// permission for admin, organization, vessel
+// permission for admin, organization, vessel [+]
 // proper commenting
 // TODO +++++++++++++++++++++++++++++
 const envFile = `.env.${environment}`;
