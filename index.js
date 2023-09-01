@@ -34,7 +34,7 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false }));
-
+app.disable("etag");
 
 // Routes
 app.use("/api/v1", router);
