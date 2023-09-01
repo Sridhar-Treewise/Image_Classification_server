@@ -19,6 +19,6 @@ router.get("/vessel-all", vesselList);
 router.get("/vessel/:id", getVesselById);
 router.get("/organizations", orgList);
 router.get("/organizations/:id", getOrgById);
-router.put("/update-org", updateOrg);
+router.put("/organizations", updateOrg);
 
 export default router;
