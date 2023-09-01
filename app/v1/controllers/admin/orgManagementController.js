@@ -32,7 +32,7 @@ export const createOrg = async (req, res) => {
 
 
 export const orgList = async (req, res) => {
-    const { pageSize, pageIndex, company_name } = req.query;
+    const { pageSize, pageIndex, company_name, orgManager } = req.query;
     const parsedPageSize = parseInt(pageSize);
     const parsedPageIndex = parseInt(pageIndex);
 
@@ -42,6 +42,11 @@ export const orgList = async (req, res) => {
     const filterConditions = {};
     if (company_name) {
         filterConditions.company_name = company_name;
+    }
+    if (orgManager) {
+        const findUser = await User.find({ fullName: orgManager, userType: "Organization" });
+        const organizationIdArray = findUser.map(user => user.organizationBelongsTo);
+        filterConditions._id = { $in: organizationIdArray };
     }
 
     try {
