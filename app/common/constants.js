@@ -31,7 +31,7 @@ export const HTTP_HEADER = {
 };
 
 export const DEFECT_DETECTION = {
-    PREDICT_IMAGE: "https://defectdetectionrings.azurewebsites.net/",
+    PREDICT_IMAGE: "https://scavaiapp.azurewebsites.net/predict",
     EXPORT_PDF: "https://defectdetectionrings.azurewebsites.net/pdf",
     EXPORT_EXCEL: "https://defectdetectionrings.azurewebsites.net/excel"
 };
@@ -40,6 +40,8 @@ export const DOC_TYPE = {
     EXCEL: "xls",
     PDF: "pdf"
 };
+
+//  PREDICT_IMAGE: "https://scavaiapp.azurewebsites.net/predict",
 
 // predict
 // input- base64string
