@@ -3,6 +3,8 @@ import User from "../../models/User.js";
 import Report from "../../models/Reports.js";
 import { ERROR_MSG } from "../../../config/messages.js";
 import Organization from "../../models/Organizations.js";
+import Subscription from "../../models/Subscriptions.js";
+import { SUBSCRIPTION_MODEL } from "../../../common/constants.js";
 
 export const dashboardList = async (req, res) => {
     try {
@@ -28,10 +30,48 @@ export const dashboardList = async (req, res) => {
 export const dashboardReportImageCount = async (req, res) => {
     try {
         const reports = await Report.countDocuments();
-        const cylinderImageCount = 0; // TODO
+        const cylinderImageCount = await Report.aggregate([
+            {
+                $project: {
+                    totalImages: {
+                        $size: {
+                            $filter: {
+                                input: { $objectToArray: "$cylindersReport" },
+                                as: "cylinder",
+                                cond: { $ne: ["$$cylinder.v.image", ""] }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalImages: { $sum: "$totalImages" }
+                }
+            }
+        ]);
         const data = {
             reports,
-            cylinderImageCount
+            cylinderImageCount: cylinderImageCount[0].totalImages
+        };
+        res.status(200).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const getSubscriptionCount = async (req, res) => {
+    try {
+        const freeTrail = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.FREE });
+        const basic = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.BASIC });
+        const pro = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.PRO });
+        const premium = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.PREMIUM });
+
+        const data = {
+            freeTrail: freeTrail.length,
+            basic: basic.length,
+            pro: pro.length,
+            premium: premium.length
         };
         res.status(200).json({ data });
     } catch (error) {

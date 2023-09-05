@@ -55,15 +55,8 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     subscription: {
-        plan: {
-            type: String, default: SUBSCRIPTION_MODEL.FREE, required: true
-        },
-        startDate: { type: Date },
-        endDate: { type: Date },
-        transactionId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Transaction"
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Subscription"
     }
 });
 const User = new mongoose.model("User", userSchema);

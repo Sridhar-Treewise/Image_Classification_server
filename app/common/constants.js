@@ -7,9 +7,9 @@ export const KEY_USER_TYPE = {
     ADMIN: USER_TYPE[2]
 };
 export const SUBSCRIPTION_MODEL = {
-    FREE: "FREE_TIER",
+    FREE: "FREE_TRIAL",
     BASIC: "BASIC",
-    STANDARD: "STANDARD",
+    PRO: "PRO",
     PREMIUM: "PREMIUM"
 };
 
