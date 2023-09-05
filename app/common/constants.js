@@ -30,6 +30,13 @@ export const HTTP_HEADER = {
     }
 };
 
+export const HTTP_HEADER_IMG = {
+    headers: {
+        "Content-Type": "application/json",
+        "Accept-Encoding": "gzip, deflate, br"
+    }
+};
+
 export const DEFECT_DETECTION = {
     PREDICT_IMAGE: "https://scavaiapp.azurewebsites.net/predict",
     EXPORT_PDF: "https://defectdetectionrings.azurewebsites.net/pdf",
