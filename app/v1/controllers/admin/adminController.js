@@ -78,4 +78,18 @@ export const getSubscriptionCount = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+export const getTransactionCount = async (req, res) => {
+    try {
+        const totalRevenue = 0;
+        const totalTransaction = 0;
+
+        const data = {
+            totalRevenue,
+            totalTransaction
+        };
+        res.status(200).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
 
