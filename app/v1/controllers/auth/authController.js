@@ -2,6 +2,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../../models/User.js";
+import Subscription from "../../models/Subscriptions.js";
 import _ from "lodash";
 import { ERROR_MSG } from "../../../config/messages.js";
 import Organization from "../../models/Organizations.js";
@@ -31,7 +32,7 @@ export const signIn = async (req, res) => {
     }
 };
 export const signUp = async (req, res) => {
-    const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "", newOrg = false, imo_number = "", cylinder_numbers = 1 } = req.body;
+    const { email = "", password, organizationAdmin, vessel_name = "", userType = "", company_name = "", newOrg = false, imo_number = "", cylinder_numbers = 1, plan } = req.body;
     const credentials = _.cloneDeep(req.body);
     const profileDetails = _.omit(credentials, ["password", "vessel_name", "company_name", "newOrgName"]); // Omit certain fields from the cloned credentials
     const domain = email.split("@")[1];
@@ -53,7 +54,11 @@ export const signUp = async (req, res) => {
             const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
             createOrg.admins[0] = user._id;
             await createOrg.save();
+            const subscription = await Subscription.create({ manager: createOrg.manager, orgCode: createOrg.code, orgId: createOrg._id, plan });
+            await subscription.save();
             user.organizationBelongsTo = createOrg._id;
+            await user.save();
+            user.subscription = subscription._id;
             await user.save();
             if (!createOrg) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
             const token = jwt.sign({ userId: user._id, userType: user.userType }, process.env.JWT_SECRET, { expiresIn: "7d" });
