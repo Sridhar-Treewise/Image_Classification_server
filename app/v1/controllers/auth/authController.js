@@ -160,3 +160,28 @@ export const getOrgs = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+
+export const getAdminByOrg = async (req, res) => {
+    // eslint-disable-next-line no-unused-vars
+    const { id, name } = req.body;
+    try {
+        const org = await Organization.findOne({ _id: id }).select("admins");
+        if (org.admins.length < 1) {
+            return res.status(200).json(handleFailedOperation(ERROR_MSG.ADMINS_NOT_EXISTS));
+        }
+
+        const admins = await User.find({ _id: { $in: org.admins } });
+        // Map the found admins to the desired format
+        const adminData = admins.map(admin => ({
+            id: admin._id,
+            name: admin.fullName
+        }));
+        res.status(200).json({ data: adminData });
+    } catch (error) {
+        if (environment === "development") {
+            // eslint-disable-next-line no-console
+            console.log("error \n", error.message);
+        }
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};

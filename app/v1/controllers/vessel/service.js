@@ -5,7 +5,7 @@ import _ from "lodash";
 import bcrypt from "bcrypt";
 import User from "../../models/User.js";
 import { ERROR_MSG } from "../../../config/messages.js";
-import { DEFECT_DETECTION, HTTP_HEADER, DOC_TYPE } from "../../../common/constants.js";
+import { DEFECT_DETECTION, HTTP_HEADER, DOC_TYPE, HTTP_HEADER_IMG } from "../../../common/constants.js";
 import axios from "axios";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import Report from "../../models/Reports.js";
@@ -24,8 +24,8 @@ export const updateProfile = async (req, res) => {
 
 export const savePredictionData = async (req, res) => {
     const userId = req.user;
-    const { predictionInfo } = req.body;
-    const data = { vesselId: userId, predictionInfo, ...req.body };
+    const { cylindersReport, ...formData } = req.body;
+    const data = { vesselId: userId, cylindersReport, ...formData };
 
     try {
         // TODO
@@ -59,7 +59,7 @@ export const getReports = async (req, res) => {
         const skip = parsedPageIndex * parsedPageSize;
         const limit = parsedPageSize;
 
-        const data = await Report.find(filter).skip(skip).limit(limit).select("-predictionInfo");
+        const data = await Report.find(filter).skip(skip).limit(limit).select("-cylindersReport");
         const ReportDataCount = await Report.count(filter);
 
 
@@ -119,7 +119,7 @@ export const generatePredictedImage = (req, res) => {
         return res.status(400).send({ message: ERROR_MSG.PAYLOAD_INVALID });
     }
 
-    const predicatedImagePromise = axios.post(DEFECT_DETECTION.PREDICT_IMAGE, image, HTTP_HEADER);
+    const predicatedImagePromise = axios.post(DEFECT_DETECTION.PREDICT_IMAGE, { image }, HTTP_HEADER_IMG);
 
     predicatedImagePromise
         .then(async response => {

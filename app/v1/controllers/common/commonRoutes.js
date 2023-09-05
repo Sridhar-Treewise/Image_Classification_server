@@ -8,7 +8,7 @@ export const getProfileDetails = async (req, res) => {
     try {
         const result = await User.findOne({ _id: id })
             .populate("organizationBelongsTo", "_id company_name")
-            .select("designation email fullName organizationBelongsTo subscription userType");
+            .select("designation email fullName organizationBelongsTo subscription userType approvedStatus");
         const profileDetail = _.omit(result, ["vesselDetails"]);
         if (!result) return res.status(404).json({ message: ERROR_MSG.PROFILE_NOT });
         res.status(200).json({ data: profileDetail });
