@@ -24,8 +24,8 @@ export const updateProfile = async (req, res) => {
 
 export const savePredictionData = async (req, res) => {
     const userId = req.user;
-    const { predictionInfo } = req.body;
-    const data = { vesselId: userId, predictionInfo, ...req.body };
+    const { predictionInfo, cylindersReport, organization } = req.body;
+    const data = { vesselId: userId, predictionInfo, cylindersReport, organization };
 
     try {
         // TODO

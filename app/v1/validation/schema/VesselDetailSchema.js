@@ -68,23 +68,18 @@ export const predictedDataSchema = Joi.object({
     cyl_oil_consump_Ltr_24hr: Joi.string().required(),
     normal_service_load_in_percent_MCR: Joi.string().required(),
     cylinder_numbers: Joi.number().required(),
-    predictionInfo: Joi.object({
-        brk: Joi.object().optional(),
-        dep: Joi.object().optional(),
-        lub: Joi.object().optional(),
-        surf: Joi.object().optional(),
-        cylinder: Joi.number().required(), // current cylinder
-        image: Joi.string().custom((value, helpers) => {
-            if (!value.startsWith("data:image")) {
-                return helpers.error("any.invalid");
-            }
-            if (value.length < MIN_IMAGE_LENGTH) {
-                return helpers.error("any.invalid");
-            }
-            if (value.length > MAX_IMAGE_LENGTH) {
-                return helpers.error("any.invalid");
-            }
-            return value;
-        }, "base64 image")
-    }).required()
+    cylindersReport: Joi.object().pattern(
+        /cylinder\d+/, // Regex pattern to match "cylinderN" keys
+        Joi.object({
+            predictionInfo: Joi.array().items(
+                Joi.object({
+                    lubricationCondition: Joi.optional(),
+                    surfaceCondition: Joi.optional(),
+                    depositsCondition: Joi.optional(),
+                    breakageCondition: Joi.optional()
+                })
+            ).required(),
+            image: Joi.string().base64().required()
+        })
+    ).required()
 });

@@ -24,14 +24,7 @@ const Schema = new mongoose.Schema({
         ref: "User",
         index: true
     },
-    predictionInfo: {
-        brk: {},
-        dep: {},
-        image: "",
-        lub: {},
-        surf: {},
-        cylinder: { type: Number }
-    }
+    cylindersReport: {}
 
 });
 const Report = mongoose.model("Reports", Schema);
