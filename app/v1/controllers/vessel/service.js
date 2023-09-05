@@ -24,8 +24,8 @@ export const updateProfile = async (req, res) => {
 
 export const savePredictionData = async (req, res) => {
     const userId = req.user;
-    const { predictionInfo, cylindersReport, organization } = req.body;
-    const data = { vesselId: userId, predictionInfo, cylindersReport, organization };
+    const { cylindersReport, ...formData } = req.body;
+    const data = { vesselId: userId, cylindersReport, ...formData };
 
     try {
         // TODO
@@ -59,7 +59,7 @@ export const getReports = async (req, res) => {
         const skip = parsedPageIndex * parsedPageSize;
         const limit = parsedPageSize;
 
-        const data = await Report.find(filter).skip(skip).limit(limit).select("-predictionInfo");
+        const data = await Report.find(filter).skip(skip).limit(limit).select("-cylindersReport");
         const ReportDataCount = await Report.count(filter);
 
 
