@@ -30,10 +30,30 @@ export const dashboardList = async (req, res) => {
 export const dashboardReportImageCount = async (req, res) => {
     try {
         const reports = await Report.countDocuments();
-        const cylinderImageCount = 0; // TODO
+        const cylinderImageCount = await Report.aggregate([
+            {
+                $project: {
+                    totalImages: {
+                        $size: {
+                            $filter: {
+                                input: { $objectToArray: "$cylindersReport" },
+                                as: "cylinder",
+                                cond: { $ne: ["$$cylinder.v.image", ""] }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalImages: { $sum: "$totalImages" }
+                }
+            }
+        ]);
         const data = {
             reports,
-            cylinderImageCount
+            cylinderImageCount: cylinderImageCount[0].totalImages
         };
         res.status(200).json({ data });
     } catch (error) {
