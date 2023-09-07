@@ -79,3 +79,42 @@ export const createVessel = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+export const orgVesselList = async (req, res) => {
+    const userId = req.user;
+    const { pageSize, pageIndex, vessel_name, imo_number } = req.query;
+    const parsedPageSize = parseInt(pageSize);
+    const parsedPageIndex = parseInt(pageIndex);
+    const skip = parsedPageIndex * parsedPageSize;
+    const limit = parsedPageSize;
+    const filterConditions = {};
+    const baseQuery = { userType: "Vessel", officerAdmin: userId };
+
+    if (vessel_name) {
+        filterConditions["vesselDetails.vessel_name"] = vessel_name;
+    }
+
+    if (imo_number) {
+        filterConditions["vesselDetails.imo_number"] = imo_number;
+    }
+
+    const queryConditions = { ...baseQuery, ...filterConditions };
+    try {
+        const users = await User.find(queryConditions)
+            .skip(skip)
+            .limit(limit);
+        const totalCount = await User.countDocuments(baseQuery);
+
+
+        const paginationResult = {
+            data: users,
+            pageInfo: {
+                pageSize: parsedPageSize,
+                pageIndex: parsedPageIndex,
+                totalCount
+            }
+        };
+        res.status(200).json(paginationResult);
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
