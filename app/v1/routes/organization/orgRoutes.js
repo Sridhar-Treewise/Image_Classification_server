@@ -7,8 +7,8 @@ const router = express.Router();
 // router.post("/create-vessel", (req, res) => {
 //     res.status(201).json({ test: "Test" });
 // });
-router.get("/vessel-list", vesselList);
-router.get("/organization-vessel-list", orgVesselList);
+router.get("/vessel-list-card", vesselList);
+router.get("/vessel-list", orgVesselList);
 router.get("/pending-vessel-list", pendingVesselList);
 router.post("/approve-request/:id", approveRequest);
 router.post("/create-vessel", createVesselValidate, createVessel);
