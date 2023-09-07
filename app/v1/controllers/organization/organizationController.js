@@ -59,6 +59,7 @@ export const createVessel = async (req, res) => {
     const { vessel_name, email, password, fullName, phone, manufacturer, type_of_engine, vessel_type, cylinder_numbers, imo_number } = req.body;
     const userId = req.user;
     const findOrg = await Organization.findOne({ manager: userId });
+    const findUser = await User.findOne({ _id: userId });
 
     try {
         const vesselExists = await User.exists({
@@ -71,7 +72,7 @@ export const createVessel = async (req, res) => {
         const vesselDetails = { vessel_name, manufacturer, type_of_engine, vessel_type, imo_number };
         const inspectionDetails = { cylinder_numbers };
         if (vesselExists) return res.status(409).json({ errorTitle: ERROR_MSG.EMAIL_VESSEL_EXISTS });
-        const vessel = await User.create({ email, password: hashedPassword, fullName, phone, vesselDetails, inspectionDetails, officerAdmin: userId, organizationBelongsTo: findOrg._id, approvedStatus: true });
+        const vessel = await User.create({ email, password: hashedPassword, fullName, phone, vesselDetails, inspectionDetails, officerAdmin: userId, organizationBelongsTo: findOrg._id, subscription: findUser.subscription, approvedStatus: true });
         if (!vessel) return res.status(400).json({ errorTitle: ERROR_MSG.VESSEL_NOT });
         res.status(201).json({ message: "Vessel created successfully" });
     } catch (error) {

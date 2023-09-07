@@ -66,6 +66,7 @@ export const signUp = async (req, res) => {
         }
         if (orgExists && userType === USER_TYPE[0]) {
             const org = await Organization.findOne({ company_name });
+            const findUser = await User.findOne({ _id: org.manager });
             if (org && !org.admins.includes(organizationAdmin)) return res.status(400).json({ message: ERROR_MSG.NO_ADMIN(company_name) });
             const hashedPassword = await bcrypt.hash(password, 10);
             const result = await User.create(
@@ -75,6 +76,7 @@ export const signUp = async (req, res) => {
                     userType: USER_TYPE[0],
                     officerAdmin: organizationAdmin,
                     organizationBelongsTo: org._id,
+                    subscription: findUser.subscription,
                     vesselDetails: { vessel_name, imo_number },
                     inspectionDetails: { cylinder_numbers }
                 });
