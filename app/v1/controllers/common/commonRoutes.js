@@ -1,4 +1,3 @@
-import _ from "lodash";
 import { ERROR_MSG } from "../../../config/messages.js";
 import User from "../../models/User.js";
 
@@ -9,10 +8,9 @@ export const getProfileDetails = async (req, res) => {
         const result = await User.findOne({ _id: id })
             .populate("organizationBelongsTo", "_id company_name")
             .populate("subscription")
-            .select("designation email fullName organizationBelongsTo subscription userType approvedStatus");
-        const profileDetail = _.omit(result, ["vesselDetails"]);
+            .select("designation email fullName organizationBelongsTo subscription userType approvedStatus vesselDetails");
         if (!result) return res.status(404).json({ message: ERROR_MSG.PROFILE_NOT });
-        res.status(200).json({ data: profileDetail });
+        res.status(200).json({ data: result });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
