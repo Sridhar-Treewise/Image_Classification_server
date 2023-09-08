@@ -142,7 +142,7 @@ export const getVesselById = async (req, res) => {
             },
             {
                 $group: {
-                    _id: vesselId,
+                    _id: null,
                     totalImages: { $sum: "$totalImages" }
                 }
             }
@@ -153,10 +153,9 @@ export const getVesselById = async (req, res) => {
         };
         const data = {
             ...vessel.vesselDetails,
-            ...vessel.inspectionDetails,
-            report
+            ...vessel.inspectionDetails
         };
-        res.status(200).json({ data });
+        res.status(200).json({ data, report });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
