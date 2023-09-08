@@ -119,3 +119,54 @@ export const orgVesselList = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+export const getVesselById = async (req, res) => {
+    const vesselId = req.params.id;
+    try {
+        const vessel = await User.findOne({ _id: vesselId })
+            .select("vesselDetails email phone inspectionDetails.cylinder_numbers");
+        if (!vessel) return res.status(404).json({ errorTitle: ERROR_MSG.NO_DETAILS, message: "No records found" });
+        const reportCount = await Report.find({ vesselId });
+        const cylinderImageCount = await Report.aggregate([
+            {
+                $project: {
+                    totalImages: {
+                        $size: {
+                            $filter: {
+                                input: { $objectToArray: "$cylindersReport" },
+                                as: "cylinder",
+                                cond: { $ne: ["$$cylinder.v.image", ""] }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalImages: { $sum: "$totalImages" }
+                }
+            }
+        ]);
+        const report = {
+            reportCount: reportCount.length,
+            cylinderImageCount: 0
+        };
+        const data = {
+            ...vessel.vesselDetails,
+            ...vessel.inspectionDetails
+        };
+        res.status(200).json({ data, report });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const deleteVessel = async (req, res) => {
+    const vesselId = req.params.id;
+    try {
+        const update = await User.deleteOne({ _id: vesselId });
+        if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        res.status(200).json({ message: " Vessel Removed Successfully" });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
