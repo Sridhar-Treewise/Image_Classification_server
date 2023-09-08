@@ -11,3 +11,10 @@ export const createVesselSchema = Joi.object({
     vessel_type: Joi.string().required(),
     cylinder_numbers: Joi.number().max(100).required()
 });
+export const vesselSchema = Joi.object({
+    pageSize: Joi.number().integer().min(1).required(),
+    totalCount: Joi.number().integer().optional(),
+    pageIndex: Joi.number().integer().min(0).required(),
+    vessel_name: Joi.string().min(0).optional(),
+    imo_number: Joi.number().allow("").optional()
+});
