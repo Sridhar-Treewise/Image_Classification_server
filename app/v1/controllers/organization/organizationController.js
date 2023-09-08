@@ -102,7 +102,7 @@ export const orgVesselList = async (req, res) => {
         const users = await User.find(queryConditions)
             .skip(skip)
             .limit(limit)
-            .select("vesselDetails email approvedStatus");
+            .select("vesselDetails email approvedStatus inspectionDetails");
         const totalCount = await User.countDocuments(baseQuery);
 
 
