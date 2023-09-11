@@ -52,7 +52,9 @@ export const vesselDetailsSchema = Joi.object({
     manufacturer: Joi.string().required(),
     type_of_engine: Joi.string().min(2).required(),
     vessel_type: Joi.string().required(),
-    cylinder_numbers: Joi.number().max(100).required()
+    cylinder_numbers: Joi.number().max(100).required(),
+    email: Joi.string().email().required(),
+    phone: Joi.number().required()
 });
 
 export const predictedDataSchema = Joi.object({
