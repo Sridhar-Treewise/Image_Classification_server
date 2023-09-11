@@ -158,9 +158,9 @@ export const updateInspectionDetails = async (req, res) => {
 export const getVesselInfo = async (req, res) => {
     const userId = req.user;
     try {
-        const result = await User.findOne({ _id: userId });
+        const result = await User.findOne({ _id: userId }).populate("officerAdmin fullName");
         if (!result) return res.status(404).send({ message: ERROR_MSG.TRY_AGAIN });
-        const data = { ...result.vesselDetails, cylinder_numbers: result.inspectionDetails.cylinder_numbers };
+        const data = { ...result.vesselDetails, cylinder_numbers: result.inspectionDetails.cylinder_numbers, email: result.email, phone: result.phone, fleetManager: result.officerAdmin.fullName };
         res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
@@ -172,13 +172,17 @@ export const updateVesselInfo = async (req, res) => {
     try {
         const updateData = {
             vesselDetails: req.body,
-            "inspectionDetails.cylinder_numbers": req.body.cylinder_numbers
+            "inspectionDetails.cylinder_numbers": req.body.cylinder_numbers,
+            email: req.body.email,
+            phone: req.body.phone
         };
         const result = await User.findOneAndUpdate({ _id: userId }, { $set: updateData }, { new: true });
         if (!result) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
         const data = {
             ...result.vesselDetails,
-            cylinder_numbers: result.inspectionDetails.cylinder_numbers
+            cylinder_numbers: result.inspectionDetails.cylinder_numbers,
+            email: result.email,
+            phone: result.phone
         };
         res.status(200).json({ data });
     } catch (error) {
