@@ -169,6 +169,11 @@ export const getVesselInfo = async (req, res) => {
 
 export const updateVesselInfo = async (req, res) => {
     const userId = req.user;
+    const findVessel = await User.findOne({ _id: userId });
+    const findOrg = await User.findOne({ _id: findVessel.officerAdmin });
+    const orgDomain = findOrg.email.split('@')[1];
+    const vesselDomain = req.body.email.split('@')[1];
+    if (orgDomain !== vesselDomain) return res.status(422).json({ message: "Email domain do not match" });
     try {
         const updateData = {
             vesselDetails: req.body,
