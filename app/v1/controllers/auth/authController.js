@@ -253,18 +253,14 @@ export const getOrgs = async (req, res) => {
 };
 
 export const getAdminByOrg = async (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const { id, name } = req.body;
+    const { id } = req.body;
     try {
         const org = await Organization.findOne({ _id: id }).select("admins");
-        console.log("1", org);
         if (org.admins.length < 1) {
             return res.status(200).json(handleFailedOperation(ERROR_MSG.ADMINS_NOT_EXISTS));
         }
 
         const admins = await User.find({ _id: { $in: org.admins } });
-        console.log("2", admins)
-        // Map the found admins to the desired format
         const adminData = admins.map(admin => ({
             id: admin._id,
             name: admin.fullName
