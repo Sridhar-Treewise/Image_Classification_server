@@ -1,6 +1,10 @@
 /* eslint-disable camelcase */
 export const ERROR_MSG = {
     ALREADY_EXISTS: "Email already exists, please try different email",
+    COMPANY_ALREADY_EXISTS: "Company already exists, please try different company name",
+    PHONE_ALREADY_EXISTS: "Phone number already exists, please try different phone number",
+    IMO_ALREADY_EXISTS: "IMO number already exists, please try different imo number",
+    VESSEL_NAME_ALREADY_EXISTS: "Vessel already exists, please try different vessel name",
     PROFILE_NOT: "Profile not created, try again",
     VESSEL_NOT: "Vessel not created, try again",
     SOMETHING_WENT: "Something Went Wrong",

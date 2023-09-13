@@ -55,7 +55,27 @@ export const signUpSchema = Joi.object({
         otherwise: Joi.string().optional()
     })
 });
-
+export const vesselRegistrationSchema = Joi.object({
+    cylinder_numbers: Joi.number().optional(),
+    company_name: Joi.string().required(),
+    phone: Joi.number().optional(),
+    email: Joi.string().email().required(),
+    fullName: Joi.string().required(),
+    vessel_name: Joi.string().required(),
+    password: Joi.string().min(2).required(),
+    confirmPassword: Joi.string().min(2).required(),
+    imo_number: Joi.number().required(),
+    officerAdmin: Joi.string().required()
+});
+export const orgRegistrationSchema = Joi.object({
+    company_name: Joi.string().required(),
+    fullName: Joi.string().required(),
+    phone: Joi.number().optional(),
+    email: Joi.string().email().required(),
+    password: Joi.string().min(2).required(),
+    confirmPassword: Joi.string().min(2).required(),
+    isNewOrg: Joi.boolean().optional()
+});
 export const domainSchema = Joi.object({
     email: Joi.string()
         .required()

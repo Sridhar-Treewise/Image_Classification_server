@@ -10,9 +10,6 @@ import { DESIGNATION, USER_TYPE } from "../../../common/constants.js";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import { environment } from "../../../config/config.js";
 
-// non admin  { email: 'johnwick@test.com', password: '123' }
-// org { email: 'ajmal.n@test.com', password: '123' }
-// admin  { email: 'adminn@scav.com', password: 'thedarkknight' }
 export const signIn = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -84,6 +81,98 @@ export const signUp = async (req, res) => {
             const token = jwt.sign({ userId: result._id, userType: result.userType }, process.env.JWT_SECRET, { expiresIn: "7d" });
             res.status(201).json({ token });
         }
+    } catch (error) {
+        if (environment === "development") {
+            // eslint-disable-next-line no-console
+            console.log("error \n", error, "\n", error.message);
+        }
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const orgRegistration = async (req, res) => {
+    const { company_name, fullName, isNewOrg, email, phone, password, confirmPassword } = req.body;
+    const domain = email.split("@")[1];
+    try {
+        const isExists = await User.findOne({ email });
+        if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
+        const isPhoneExists = await User.findOne({ phone });
+        if (isPhoneExists) return res.status(409).json({ message: ERROR_MSG.PHONE_ALREADY_EXISTS });
+        if (password !== confirmPassword) return res.status(400).json({ message: ERROR_MSG.PASSWORD_MISMATCH });
+        if (isNewOrg) {
+            const isCompanyExists = await Organization.findOne({ company_name });
+            if (isCompanyExists) return res.status(409).json({ message: ERROR_MSG.COMPANY_ALREADY_EXISTS });
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const user = await User.create({ userType: USER_TYPE[1], fullName, email, phone, password: hashedPassword, approvedStatus: true, designation: DESIGNATION[1] });
+            const code = domain.split(".")[0].toUpperCase() || "";
+            const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
+            createOrg.admins.push(user._id);
+            await createOrg.save();
+            const subscription = await Subscription.create({ manager: createOrg.manager, orgCode: createOrg.code, orgId: createOrg._id });
+            user.organizationBelongsTo = createOrg._id;
+            user.subscription = subscription._id;
+            await user.save();
+            if (!createOrg) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+            const token = jwt.sign({ userId: user._id, userType: USER_TYPE[1] }, process.env.JWT_SECRET, { expiresIn: "7d" });
+            res.status(201).json({ token });
+        }
+        if (!isNewOrg) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const user = await User.create({ userType: USER_TYPE[1], fullName, email, phone, password: hashedPassword, approvedStatus: true, designation: DESIGNATION[1] });
+            const findOrg = await Organization.findOne({ _id: company_name });
+            findOrg.admins.push(user._id);
+            await findOrg.save();
+            user.organizationBelongsTo = company_name;
+            await user.save();
+            const findAdmin = await Subscription.findOne({ orgId: company_name });
+            user.subscription = findAdmin._id;
+            await user.save();
+            if (!user) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+            const token = jwt.sign({ userId: user._id, userType: USER_TYPE[1] }, process.env.JWT_SECRET, { expiresIn: "7d" });
+            res.status(201).json({ token });
+        }
+    } catch (error) {
+        if (environment === "development") {
+            // eslint-disable-next-line no-console
+            console.log("error \n", error, "\n", error.message);
+        }
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const vesselRegistration = async (req, res) => {
+    const { company_name, fullName, email, phone, password, confirmPassword, vessel_name, imo_number, cylinder_numbers, officerAdmin } = req.body;
+    try {
+        const isExists = await User.findOne({ email });
+        if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
+        const isPhoneExists = await User.findOne({ phone });
+        if (isPhoneExists) return res.status(409).json({ message: ERROR_MSG.PHONE_ALREADY_EXISTS });
+        const isVesselNameExists = await User.exists({ organizationBelongsTo: company_name, "vesselDetails.vessel_name": vessel_name });
+        if (isVesselNameExists) return res.status(409).json({ message: ERROR_MSG.VESSEL_NAME_ALREADY_EXISTS });
+        const isImoExists = await User.exists({ "vesselDetails.imo_number": imo_number });
+        if (isImoExists) return res.status(409).json({ message: ERROR_MSG.IMO_ALREADY_EXISTS });
+        const orgExists = await Organization.findOne({ _id: company_name });
+        if (!orgExists) return res.status(404).json({ message: ERROR_MSG.ORG_NOT_FOUND });
+        const findOrg = await User.findOne({ _id: officerAdmin });
+        const orgDomain = findOrg.email.split("@")[1];
+        const vesselDomain = req.body.email.split("@")[1];
+        if (orgDomain !== vesselDomain) return res.status(422).json({ message: "Email domain do not match" });
+        if (password !== confirmPassword) return res.status(400).json({ message: ERROR_MSG.PASSWORD_MISMATCH });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const result = await User.create(
+            {
+                fullName,
+                email,
+                phone,
+                password: hashedPassword,
+                userType: USER_TYPE[0],
+                officerAdmin,
+                organizationBelongsTo: company_name,
+                subscription: findOrg.subscription,
+                vesselDetails: { vessel_name, imo_number },
+                inspectionDetails: { cylinder_numbers }
+            });
+        if (!result) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+        const token = jwt.sign({ userId: result._id, userType: USER_TYPE[0] }, process.env.JWT_SECRET, { expiresIn: "7d" });
+        res.status(201).json({ token });
     } catch (error) {
         if (environment === "development") {
             // eslint-disable-next-line no-console
@@ -164,8 +253,7 @@ export const getOrgs = async (req, res) => {
 };
 
 export const getAdminByOrg = async (req, res) => {
-    // eslint-disable-next-line no-unused-vars
-    const { id, name } = req.body;
+    const { id } = req.body;
     try {
         const org = await Organization.findOne({ _id: id }).select("admins");
         if (org.admins.length < 1) {
@@ -173,7 +261,6 @@ export const getAdminByOrg = async (req, res) => {
         }
 
         const admins = await User.find({ _id: { $in: org.admins } });
-        // Map the found admins to the desired format
         const adminData = admins.map(admin => ({
             id: admin._id,
             name: admin.fullName
