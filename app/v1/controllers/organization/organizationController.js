@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import User from "../../models/User.js";
 import Organization from "../../models/Organizations.js";
 import { ERROR_MSG } from "../../../config/messages.js";
+import mongoose from "mongoose";
 export const vesselList = async (req, res) => {
     const id = req.user;
     try {
@@ -126,7 +127,10 @@ export const getVesselById = async (req, res) => {
             .select("vesselDetails email phone inspectionDetails.cylinder_numbers");
         if (!vessel) return res.status(404).json({ errorTitle: ERROR_MSG.NO_DETAILS, message: "No records found" });
         const reportCount = await Report.find({ vesselId });
-        const cylinderImageCount = await Report.aggregate([
+        const result = await Report.aggregate([
+            {
+                $match: { vesselId: mongoose.Types.ObjectId(vesselId) }
+            },
             {
                 $project: {
                     totalImages: {
@@ -139,17 +143,11 @@ export const getVesselById = async (req, res) => {
                         }
                     }
                 }
-            },
-            {
-                $group: {
-                    _id: null,
-                    totalImages: { $sum: "$totalImages" }
-                }
             }
         ]);
         const report = {
             reportCount: reportCount.length,
-            cylinderImageCount: 0
+            cylinderImageCount: result[0]?.totalImages
         };
         const data = {
             ...vessel.vesselDetails,

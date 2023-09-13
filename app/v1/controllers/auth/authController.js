@@ -10,9 +10,6 @@ import { DESIGNATION, USER_TYPE } from "../../../common/constants.js";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import { environment } from "../../../config/config.js";
 
-// non admin  { email: 'johnwick@test.com', password: '123' }
-// org { email: 'ajmal.n@test.com', password: '123' }
-// admin  { email: 'adminn@scav.com', password: 'thedarkknight' }
 export const signIn = async (req, res) => {
     const { email, password } = req.body;
     try {
@@ -98,17 +95,20 @@ export const orgRegistration = async (req, res) => {
     try {
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
+        const isPhoneExists = await User.findOne({ phone });
+        if (isPhoneExists) return res.status(409).json({ message: ERROR_MSG.PHONE_ALREADY_EXISTS });
         if (password !== confirmPassword) return res.status(400).json({ message: ERROR_MSG.PASSWORD_MISMATCH });
         if (isNewOrg) {
+            const isCompanyExists = await Organization.findOne({ company_name });
+            if (isCompanyExists) return res.status(409).json({ message: ERROR_MSG.COMPANY_ALREADY_EXISTS });
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = await User.create({ userType: USER_TYPE[1], fullName, email, phone, password: hashedPassword, approvedStatus: true, designation: DESIGNATION[1] });
             const code = domain.split(".")[0].toUpperCase() || "";
             const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
+            createOrg.admins.push(user._id);
             await createOrg.save();
             const subscription = await Subscription.create({ manager: createOrg.manager, orgCode: createOrg.code, orgId: createOrg._id });
-            await subscription.save();
             user.organizationBelongsTo = createOrg._id;
-            await user.save();
             user.subscription = subscription._id;
             await user.save();
             if (!createOrg) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
@@ -118,16 +118,15 @@ export const orgRegistration = async (req, res) => {
         if (!isNewOrg) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = await User.create({ userType: USER_TYPE[1], fullName, email, phone, password: hashedPassword, approvedStatus: true, designation: DESIGNATION[1] });
-            const code = domain.split(".")[0].toUpperCase() || "";
-            const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
-            createOrg.admins.push(company_name);
-            await createOrg.save();
-            user.organizationBelongsTo = createOrg._id;
+            const findOrg = await Organization.findOne({ _id: company_name });
+            findOrg.admins.push(user._id);
+            await findOrg.save();
+            user.organizationBelongsTo = company_name;
             await user.save();
-            const findAdmin = await Subscription.findOne({ manager: company_name });
+            const findAdmin = await Subscription.findOne({ orgId: company_name });
             user.subscription = findAdmin._id;
             await user.save();
-            if (!createOrg) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+            if (!user) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
             const token = jwt.sign({ userId: user._id, userType: USER_TYPE[1] }, process.env.JWT_SECRET, { expiresIn: "7d" });
             res.status(201).json({ token });
         }
@@ -140,11 +139,17 @@ export const orgRegistration = async (req, res) => {
     }
 };
 export const vesselRegistration = async (req, res) => {
-    const { company_name, fullName, email, phone, password, confirmPassword, vessel_name, imo_number, cylinder_numbers, officerAdmin, } = req.body;
+    const { company_name, fullName, email, phone, password, confirmPassword, vessel_name, imo_number, cylinder_numbers, officerAdmin } = req.body;
     try {
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
-        const orgExists = await Organization.findOne({ manager: officerAdmin });
+        const isPhoneExists = await User.findOne({ phone });
+        if (isPhoneExists) return res.status(409).json({ message: ERROR_MSG.PHONE_ALREADY_EXISTS });
+        const isVesselNameExists = await User.exists({ organizationBelongsTo: company_name, "vesselDetails.vessel_name": vessel_name });
+        if (isVesselNameExists) return res.status(409).json({ message: ERROR_MSG.VESSEL_NAME_ALREADY_EXISTS });
+        const isImoExists = await User.exists({ "vesselDetails.imo_number": imo_number });
+        if (isImoExists) return res.status(409).json({ message: ERROR_MSG.IMO_ALREADY_EXISTS });
+        const orgExists = await Organization.findOne({ _id: company_name });
         if (!orgExists) return res.status(404).json({ message: ERROR_MSG.ORG_NOT_FOUND });
         const findOrg = await User.findOne({ _id: officerAdmin });
         const orgDomain = findOrg.email.split("@")[1];
@@ -252,11 +257,13 @@ export const getAdminByOrg = async (req, res) => {
     const { id, name } = req.body;
     try {
         const org = await Organization.findOne({ _id: id }).select("admins");
+        console.log("1", org);
         if (org.admins.length < 1) {
             return res.status(200).json(handleFailedOperation(ERROR_MSG.ADMINS_NOT_EXISTS));
         }
 
         const admins = await User.find({ _id: { $in: org.admins } });
+        console.log("2", admins)
         // Map the found admins to the desired format
         const adminData = admins.map(admin => ({
             id: admin._id,
