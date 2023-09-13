@@ -37,7 +37,6 @@ jobs:
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-      NODE_ENV: 'production'
 
     steps:
       - name: Download artifact from build job
@@ -53,6 +52,9 @@ jobs:
           slot-name: 'Production'
           publish-profile: ${{secrets.AZUREAPPSERVICE_PUBLISHPROFILE_12CD76E656D54FBBA67C17CFE09B7372}}
           package: .
+      - name: 'Set NODE_ENV to production'
+        run: |
+            echo "NODE_ENV=production" >> $GITHUB_ENV
 
       - name: Check if Node.js server is running
         run: |
