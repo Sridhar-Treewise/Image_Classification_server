@@ -50,4 +50,3 @@ app.use(errorHandler);
 connectToDatabase(uri, options, PORT, app, environment);
 
 export { app };
-
