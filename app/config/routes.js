@@ -10,7 +10,7 @@ router.use("/no-auth", authRoutes);
 router.use("/auth", verifyToken, serviceRoutes);
 
 // Health check
-router.get("/ping", (req, res) => res.status(200).json({ pong: true }));
+router.get("/ping", (req, res) => res.status(200).json({ pong: true, env: process.env.NODE_ENV }));
 
 
 export default router;

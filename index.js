@@ -19,7 +19,6 @@ const environment = process.env.NODE_ENV || "development";
 // connection pool
 // validate, body, query, params [+]
 // success failed operation [+]
-// do proper planning
 // permission for admin, organization, vessel [+]
 // proper commenting
 // TODO +++++++++++++++++++++++++++++
@@ -48,7 +47,7 @@ if (environment === "development") {
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-connectToDatabase(uri, options, PORT, app);
+connectToDatabase(uri, options, PORT, app, environment);
 
 export { app };
 

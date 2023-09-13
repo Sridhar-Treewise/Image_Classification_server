@@ -2,7 +2,6 @@ import { ERROR_MSG } from "../../../config/messages.js";
 import User from "../../models/User.js";
 import { USER_TYPE } from "../../../common/constants.js";
 
-
 export const getProfileDetails = async (req, res) => {
     const id = req.user || "";
     const userType = req.query.userType;
