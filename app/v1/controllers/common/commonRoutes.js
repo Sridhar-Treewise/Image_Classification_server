@@ -15,7 +15,6 @@ export const getProfileDetails = async (req, res) => {
         if (!result) return res.status(404).json({ message: ERROR_MSG.PROFILE_NOT });
         if (userType === USER_TYPE[1]) {
             result = {
-                _id: result._id,
                 fullName: result.fullName,
                 email: result.email,
                 phone: result.phone,
