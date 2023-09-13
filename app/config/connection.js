@@ -5,6 +5,7 @@ const customOptions = {
     useUnifiedTopology: true
 };
 export function connectToDatabase(uri, options = customOptions, PORT, app, environment) {
+    console.log(uri)
     return mongoose
         .connect(uri, options)
         .then(() => {
