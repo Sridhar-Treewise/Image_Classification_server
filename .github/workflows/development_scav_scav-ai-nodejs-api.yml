@@ -43,9 +43,9 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: node-app
-          
+
       - name: 'Set NODE_ENV to production'
-          run: |
+        run: |
               echo "NODE_ENV=production" >> $GITHUB_ENV
 
       - name: 'Deploy to Azure Web App'
