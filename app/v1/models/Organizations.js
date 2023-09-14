@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const organizationSchema = new mongoose.Schema({
@@ -20,7 +21,61 @@ const organizationSchema = new mongoose.Schema({
     admins: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-    }]
+    }],
+    freePlanLimit: {
+        maxManagers: {
+            type: Number,
+            default: 1
+        },
+        maxVessels: {
+            type: Number,
+            default: 1
+        },
+        maxDownloads: {
+            type: Number,
+            default: 0
+        },
+        pastViewDuration: {
+            type: Number,
+            default: 30
+        }
+    },
+    basicPlanLimit: {
+        maxManagers: {
+            type: Number,
+            default: 3
+        },
+        maxVessels: {
+            type: Number,
+            default: 3
+        },
+        maxDownloads: {
+            type: Number,
+            default: 10
+        },
+        pastViewDuration: {
+            type: Number,
+            default: 30
+        }
+    },
+    proPlanLimit: {
+        maxManagers: {
+            type: Number,
+            default: 7
+        },
+        maxVessels: {
+            type: Number,
+            default: 5
+        },
+        maxDownloads: {
+            type: Number,
+            default: Number.MAX_SAFE_INTEGER
+        },
+        pastViewDuration: {
+            type: Number,
+            default: 2
+        }
+    }
 });
 const Organization = mongoose.model("Organization", organizationSchema);
 
