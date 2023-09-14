@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable indent */
 import mongoose from "mongoose";
-import { DESIGNATION, SUBSCRIPTION_MODEL, USER_TYPE } from "../../common/constants.js";
+import { DESIGNATION, USER_TYPE } from "../../common/constants.js";
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
         trim: true,
         unique: true
     },
-    phone: { type: String, default: "-", require: true },
+    phone: { type: String, default: "-", require: true, unique: true },
     password: { type: String, unique: true },
     status: { type: Boolean, default: true, require: true },
     approvedStatus: { type: Boolean, default: false, require: true },
@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     },
     vesselDetails: {
         vessel_name: { type: String, default: "", index: true },
-        imo_number: { type: Number, default: 0 },
+        imo_number: { type: Number, default: 0, unique: true },
         manufacturer: { type: String, default: "" },
         type_of_engine: { type: String, default: "" },
         vessel_type: { type: String, default: "" }
