@@ -47,14 +47,14 @@ export const inspectionImageSchema = Joi.object({
 });
 
 export const vesselDetailsSchema = Joi.object({
-    vessel_name: Joi.string().required(),
-    imo_number: Joi.number().required(),
-    manufacturer: Joi.string().required(),
-    type_of_engine: Joi.string().min(2).required(),
-    vessel_type: Joi.string().required(),
-    cylinder_numbers: Joi.number().max(100).required(),
-    email: Joi.string().email().required(),
-    phone: Joi.number().required()
+    vessel_name: Joi.string().optional(),
+    imo_number: Joi.number().optional(),
+    manufacturer: Joi.string().optional(),
+    type_of_engine: Joi.string().min(2).optional(),
+    vessel_type: Joi.string().optional(),
+    cylinder_numbers: Joi.number().max(100).optional(),
+    email: Joi.string().email().optional(),
+    phone: Joi.number().optional()
 });
 
 export const predictedDataSchema = Joi.object({

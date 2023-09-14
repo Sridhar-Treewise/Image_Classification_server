@@ -18,3 +18,8 @@ export const vesselSchema = Joi.object({
     vessel_name: Joi.string().min(0).optional(),
     imo_number: Joi.number().allow("").optional()
 });
+export const orgProfileSchema = Joi.object({
+    fullName: Joi.string().min(3).optional(),
+    email: Joi.string().email().optional(),
+    phone: Joi.number().optional()
+});

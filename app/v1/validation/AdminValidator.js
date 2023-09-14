@@ -1,5 +1,5 @@
 import { validator } from "../../utils/validators.js";
-import { passwordSchema, dashboardUserSchema, dashboardVesselSchema, dashboardOrgSchema } from "./schema/AdminValidatorSchema.js";
+import { passwordSchema, dashboardUserSchema, dashboardVesselSchema, dashboardOrgSchema, userDetailsSchema } from "./schema/AdminValidatorSchema.js";
 import { queryValidator } from "../validation/validator.js";
 
 export const passwordValidation = (req, res, next) => {
@@ -13,4 +13,7 @@ export const dashboardVesselValidation = (req, res, next) => {
 };
 export const dashboardOrgValidation = (req, res, next) => {
     queryValidator(dashboardOrgSchema, req.query, next);
+};
+export const userDetailsValidation = (req, res, next) => {
+    validator(userDetailsSchema, req.body, next);
 };

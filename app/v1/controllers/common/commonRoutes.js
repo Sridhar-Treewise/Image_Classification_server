@@ -1,7 +1,6 @@
 import { ERROR_MSG } from "../../../config/messages.js";
 import User from "../../models/User.js";
 import { USER_TYPE } from "../../../common/constants.js";
-import Organization from "../../models/Organizations.js";
 
 export const getProfileDetails = async (req, res) => {
     const id = req.user || "";
@@ -28,7 +27,24 @@ export const getProfileDetails = async (req, res) => {
 };
 export const updateProfile = async (req, res) => {
     const id = req.user;
-    const findUser = await User.findOne({ _id: id });
+    const { email, phone } = req.body;
+    const existingUser = await User.findOne({
+        $or: [
+            { email },
+            { phone }
+        ]
+    });
+    if (existingUser) {
+        let message;
+
+        if (existingUser.email === email) {
+            message = ERROR_MSG.ALREADY_EXISTS;
+        } else if (existingUser.phone === phone) {
+            message = ERROR_MSG.PHONE_ALREADY_EXISTS;
+        }
+
+        return res.status(409).json({ message });
+    }
     try {
         const updateData = {
             fullName: req.body.fullName,
@@ -36,13 +52,11 @@ export const updateProfile = async (req, res) => {
             phone: req.body.phone
         };
         const result = await User.findOneAndUpdate({ _id: id }, { $set: updateData }, { new: true });
-        const org = await Organization.findByIdAndUpdate({ _id: findUser.organizationBelongsTo }, { $set: { company_name: req.body.company_name } }, { new: true });
-        if (!result && !org) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
+        if (!result) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
         const data = {
             fullName: result.fullName,
             email: result.email,
-            phone: result.phone,
-            company_name: org.company_name
+            phone: result.phone
         };
         res.status(200).json({ data });
     } catch (error) {
