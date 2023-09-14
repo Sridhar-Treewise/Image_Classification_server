@@ -19,7 +19,7 @@ export const vesselSchema = Joi.object({
     imo_number: Joi.number().allow("").optional()
 });
 export const orgProfileSchema = Joi.object({
-    fullName: Joi.string().min(3).optional(),
-    email: Joi.string().email().optional(),
-    phone: Joi.number().optional()
+    fullName: Joi.string().min(3).required(),
+    email: Joi.string().email().required(),
+    phone: Joi.number().required()
 });

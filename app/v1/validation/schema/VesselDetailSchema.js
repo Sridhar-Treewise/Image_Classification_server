@@ -48,13 +48,13 @@ export const inspectionImageSchema = Joi.object({
 
 export const vesselDetailsSchema = Joi.object({
     vessel_name: Joi.string().optional(),
-    imo_number: Joi.number().optional(),
+    imo_number: Joi.number().required(),
     manufacturer: Joi.string().optional(),
     type_of_engine: Joi.string().min(2).optional(),
     vessel_type: Joi.string().optional(),
     cylinder_numbers: Joi.number().max(100).optional(),
-    email: Joi.string().email().optional(),
-    phone: Joi.number().optional()
+    email: Joi.string().email().required(),
+    phone: Joi.number().required()
 });
 
 export const predictedDataSchema = Joi.object({
