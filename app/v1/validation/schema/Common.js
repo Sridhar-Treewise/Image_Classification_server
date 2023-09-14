@@ -27,9 +27,5 @@ export const reportsSchema = Joi.object({
             then: Joi.number().greater(Joi.ref("startDate")).optional()
         })
 });
-export const orgProfileSchema = Joi.object({
-    fullName: Joi.string().min(3).required(),
-    email: Joi.string().email().required(),
-    phone: Joi.number().required()
-});
+
 

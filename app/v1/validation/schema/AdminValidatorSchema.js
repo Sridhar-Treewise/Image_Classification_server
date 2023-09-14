@@ -27,3 +27,7 @@ export const dashboardOrgSchema = Joi.object({
     company_name: Joi.string().min(0).optional(),
     orgManager: Joi.string().min(0).optional()
 });
+export const userDetailsSchema = Joi.object({
+    phone: Joi.number().optional(),
+    email: Joi.string().email().optional()
+});

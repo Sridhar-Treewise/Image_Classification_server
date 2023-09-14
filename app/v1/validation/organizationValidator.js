@@ -1,6 +1,5 @@
 import { validator } from "../../utils/validators.js";
-import { createVesselSchema, vesselSchema } from "./schema/organizationValidatorSchema.js";
-import { orgProfileSchema } from "./schema/Common.js";
+import { createVesselSchema, vesselSchema, orgProfileSchema } from "./schema/organizationValidatorSchema.js";
 import { queryValidator } from "../validation/validator.js";
 
 

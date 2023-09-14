@@ -27,6 +27,24 @@ export const getProfileDetails = async (req, res) => {
 };
 export const updateProfile = async (req, res) => {
     const id = req.user;
+    const { email, phone } = req.body;
+    const existingUser = await User.findOne({
+        $or: [
+            { email },
+            { phone }
+        ]
+    });
+    if (existingUser) {
+        let message;
+
+        if (existingUser.email === email) {
+            message = ERROR_MSG.ALREADY_EXISTS;
+        } else if (existingUser.phone === phone) {
+            message = ERROR_MSG.PHONE_ALREADY_EXISTS;
+        }
+
+        return res.status(409).json({ message });
+    }
     try {
         const updateData = {
             fullName: req.body.fullName,
