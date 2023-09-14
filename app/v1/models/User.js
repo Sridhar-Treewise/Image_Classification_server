@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable indent */
 import mongoose from "mongoose";
-import { DESIGNATION, SUBSCRIPTION_MODEL, USER_TYPE } from "../../common/constants.js";
+import { DESIGNATION, USER_TYPE } from "../../common/constants.js";
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
@@ -57,6 +57,33 @@ const userSchema = new mongoose.Schema({
     subscription: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Subscription"
+    }
+});
+
+userSchema.pre("save", async function (next) {
+    try {
+        // Check if the phone number, email, or IMO number already exists in the database
+        const existingUser = await mongoose.model("User").findOne({
+            $or: [
+                { phone: this.phone },
+                { email: this.email },
+                { "vesselDetails.imo_number": this.vesselDetails.imo_number }
+            ]
+        });
+
+        if (existingUser) {
+            if (existingUser.phone === this.phone) {
+                throw new Error("Phone number already exists.");
+            } else if (existingUser.email === this.email) {
+                throw new Error("Email address already exists.");
+            } else {
+                throw new Error("IMO Number already exists.");
+            }
+        }
+
+        next(); // Continue with the save operation
+    } catch (error) {
+        next(error); // Pass any error to the next middleware
     }
 });
 const User = new mongoose.model("User", userSchema);
