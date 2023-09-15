@@ -46,3 +46,12 @@ export const verifyUserType = (userType = "") => {
 };
 
 
+export const setCaching = (req, res, next) => {
+    const period = 60 * 5;
+    if (req.method === "GET" && req.url !== "/api/v1/ping") {
+        res.set("Cache-Control", `public, max-age=${period}`);
+    } else {
+        res.set("Cache-control", "no-store");
+    }
+    next();
+};
