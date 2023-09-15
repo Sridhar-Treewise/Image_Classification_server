@@ -95,7 +95,7 @@ export const updateUser = async (req, res) => {
             { phone }
         ]
     });
-    if (existingUser) {
+    if (existingUser && existingUser._id.toString() !== _id) {
         let message;
 
         if (existingUser.email === email) {
