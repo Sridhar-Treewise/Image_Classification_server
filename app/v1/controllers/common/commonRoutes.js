@@ -34,7 +34,7 @@ export const updateProfile = async (req, res) => {
             { phone }
         ]
     });
-    if (existingUser) {
+    if (existingUser && existingUser._id.toString() !== id) {
         let message;
 
         if (existingUser.email === email) {
