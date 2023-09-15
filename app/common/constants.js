@@ -10,7 +10,7 @@ export const SUBSCRIPTION_MODEL = {
     FREE: "FREE_TRIAL",
     BASIC: "BASIC",
     PRO: "PRO",
-    PREMIUM: "PREMIUM"
+    CUSTOM: "CUSTOM"
 };
 
 export const DESIGNATION = [
