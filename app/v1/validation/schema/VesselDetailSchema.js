@@ -81,7 +81,8 @@ export const predictedDataSchema = Joi.object({
                     breakageCondition: Joi.optional()
                 })
             ).required(),
-            image: Joi.string().base64().required()
+            image: Joi.string().base64().required(),
+            remarks: Joi.string().optional()
         })
     ).required()
 });
