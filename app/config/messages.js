@@ -26,7 +26,9 @@ export const ERROR_MSG = {
     SERVICE_NOT_AVAILABLE: "The resource is temporarily unavailable. Please try again later.",
     EMAIL_VESSEL_EXISTS: "Email or Vessel Name Already Exists",
     INCORRECT_PSW: "Incorrect Password",
-    PASSWORD_MISMATCH: "Passwords don't match"
+    PASSWORD_MISMATCH: "Passwords don't match",
+    SUBSCRIPTION_LIMIT_EXCEEDED: " Subscription limit is exceeded",
+    SUBSCRIPTION_EXPIRED: " Subscription Plan expired"
 
 };
 

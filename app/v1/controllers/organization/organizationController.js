@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import User from "../../models/User.js";
 import Organization from "../../models/Organizations.js";
 import { ERROR_MSG } from "../../../config/messages.js";
+import { SUBSCRIPTION_MODEL } from "../../../common/constants.js";
 import mongoose from "mongoose";
 export const vesselList = async (req, res) => {
     const id = req.user;
@@ -59,8 +60,10 @@ export const approveRequest = async (req, res) => {
 export const createVessel = async (req, res) => {
     const { vessel_name, email, password, fullName, phone, manufacturer, type_of_engine, vessel_type, cylinder_numbers, imo_number } = req.body;
     const userId = req.user;
+    const subscription = req.subscription;
     const findOrg = await Organization.findOne({ manager: userId });
     const findUser = await User.findOne({ _id: userId });
+    let count;
 
     try {
         const vesselExists = await User.exists({
@@ -75,6 +78,18 @@ export const createVessel = async (req, res) => {
         if (vesselExists) return res.status(409).json({ errorTitle: ERROR_MSG.EMAIL_VESSEL_EXISTS });
         const vessel = await User.create({ email, password: hashedPassword, fullName, phone, vesselDetails, inspectionDetails, officerAdmin: userId, organizationBelongsTo: findOrg._id, subscription: findUser.subscription, approvedStatus: true });
         if (!vessel) return res.status(400).json({ errorTitle: ERROR_MSG.VESSEL_NOT });
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            count = findOrg.FREE_TRIAL_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: findOrg._id }, { $set: { "FREE_TRIAL_LIMIT.maxVessels": count } }, { new: true });
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+            count = findOrg.BASIC_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: findOrg._id }, { $set: { "BASIC_LIMIT.maxVessels": count } }, { new: true });
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+            count = findOrg.PRO_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: findOrg._id }, { $set: { "PRO_LIMIT.maxVessels": count } }, { new: true });
+        }
         res.status(201).json({ message: "Vessel created successfully" });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });

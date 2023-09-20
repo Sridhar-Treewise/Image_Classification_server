@@ -22,7 +22,7 @@ const organizationSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
     }],
-    freePlanLimit: {
+    FREE_TRIAL_LIMIT: {
         maxManagers: {
             type: Number,
             default: 1
@@ -37,10 +37,10 @@ const organizationSchema = new mongoose.Schema({
         },
         pastViewDuration: {
             type: Number,
-            default: 30
+            default: 0
         }
     },
-    basicPlanLimit: {
+    BASIC_LIMIT: {
         maxManagers: {
             type: Number,
             default: 3
@@ -58,7 +58,25 @@ const organizationSchema = new mongoose.Schema({
             default: 30
         }
     },
-    proPlanLimit: {
+    PRO_LIMIT: {
+        maxManagers: {
+            type: Number,
+            default: 7
+        },
+        maxVessels: {
+            type: Number,
+            default: 5
+        },
+        maxDownloads: {
+            type: Number,
+            default: Number.MAX_SAFE_INTEGER
+        },
+        pastViewDuration: {
+            type: Number,
+            default: 2
+        }
+    },
+    CUSTOM_LIMIT: {
         maxManagers: {
             type: Number,
             default: 7

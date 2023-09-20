@@ -6,7 +6,7 @@ import Subscription from "../../models/Subscriptions.js";
 import _ from "lodash";
 import { ERROR_MSG } from "../../../config/messages.js";
 import Organization from "../../models/Organizations.js";
-import { DESIGNATION, USER_TYPE } from "../../../common/constants.js";
+import { DESIGNATION, USER_TYPE, SUBSCRIPTION_MODEL } from "../../../common/constants.js";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import { environment } from "../../../config/config.js";
 
@@ -92,6 +92,7 @@ export const signUp = async (req, res) => {
 export const orgRegistration = async (req, res) => {
     const { company_name, fullName, isNewOrg, email, phone, password, confirmPassword } = req.body;
     const domain = email.split("@")[1];
+    let count;
     try {
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
@@ -116,6 +117,24 @@ export const orgRegistration = async (req, res) => {
             res.status(201).json({ token });
         }
         if (!isNewOrg) {
+            const userId = company_name;
+            const isManagerLimit = await Organization.findOne({ _id: userId });
+            const subscription = await Subscription.findOne({ orgId: userId });
+            if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+                if (isManagerLimit.FREE_TRIAL_LIMIT.maxManagers === 0) {
+                    return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+                }
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+                if (isManagerLimit.BASIC_LIMIT.maxManagers === 0) {
+                    return res.status(200).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+                }
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+                if (isManagerLimit.PRO_LIMIT.maxManagers === 0) {
+                    return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+                }
+            }
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = await User.create({ userType: USER_TYPE[1], fullName, email, phone, password: hashedPassword, approvedStatus: true, designation: DESIGNATION[1] });
             const findOrg = await Organization.findOne({ _id: company_name });
@@ -127,6 +146,18 @@ export const orgRegistration = async (req, res) => {
             user.subscription = findAdmin._id;
             await user.save();
             if (!user) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+            if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+                count = isManagerLimit.FREE_TRIAL_LIMIT.maxManagers - 1;
+                await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "FREE_TRIAL_LIMIT.maxManagers": count } }, { new: true });
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+                count = isManagerLimit.BASIC_LIMIT.maxManagers - 1;
+                await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "BASIC_LIMIT.maxManagers": count } }, { new: true });
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+                count = isManagerLimit.PRO_LIMIT.maxManagers - 1;
+                await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "PRO_LIMIT.maxManagers": count } }, { new: true });
+            }
             const token = jwt.sign({ userId: user._id, userType: USER_TYPE[1] }, process.env.JWT_SECRET, { expiresIn: "7d" });
             res.status(201).json({ token });
         }
@@ -140,7 +171,26 @@ export const orgRegistration = async (req, res) => {
 };
 export const vesselRegistration = async (req, res) => {
     const { company_name, fullName, email, phone, password, confirmPassword, vessel_name, imo_number, cylinder_numbers, officerAdmin } = req.body;
+    let count;
     try {
+        const userId = company_name;
+        const isManagerLimit = await Organization.findOne({ _id: userId });
+        const subscription = await Subscription.findOne({ orgId: userId });
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            if (isManagerLimit.FREE_TRIAL_LIMIT.maxVessels === 0) {
+                return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+            }
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+            if (isManagerLimit.BASIC_LIMIT.maxVessels === 0) {
+                return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+            }
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+            if (isManagerLimit.PRO_LIMIT.maxVessels === 0) {
+                return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+            }
+        }
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
         const isPhoneExists = await User.findOne({ phone });
@@ -171,6 +221,18 @@ export const vesselRegistration = async (req, res) => {
                 inspectionDetails: { cylinder_numbers }
             });
         if (!result) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            count = isManagerLimit.FREE_TRIAL_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "FREE_TRIAL_LIMIT.maxVessels": count } }, { new: true });
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+            count = isManagerLimit.BASIC_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "BASIC_LIMIT.maxVessels": count } }, { new: true });
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+            count = isManagerLimit.PRO_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "PRO_LIMIT.maxVessels": count } }, { new: true });
+        }
         const token = jwt.sign({ userId: result._id, userType: USER_TYPE[0] }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.status(201).json({ token });
     } catch (error) {

@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 /* eslint-disable indent */
 import mongoose from "mongoose";
-import { DESIGNATION, SUBSCRIPTION_MODEL, USER_TYPE } from "../../common/constants.js";
+import { DESIGNATION, USER_TYPE } from "../../common/constants.js";
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,

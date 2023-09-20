@@ -5,10 +5,13 @@ import _ from "lodash";
 import bcrypt from "bcrypt";
 import User from "../../models/User.js";
 import { ERROR_MSG } from "../../../config/messages.js";
-import { DEFECT_DETECTION, HTTP_HEADER, DOC_TYPE, HTTP_HEADER_IMG } from "../../../common/constants.js";
+import { DEFECT_DETECTION, HTTP_HEADER, DOC_TYPE, HTTP_HEADER_IMG, SUBSCRIPTION_MODEL } from "../../../common/constants.js";
 import axios from "axios";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import Report from "../../models/Reports.js";
+import Organization from "../../models/Organizations.js";
+
+import { getOlderTimestamp } from "../../../utils/dateUtils.js";
 
 export const updateProfile = async (req, res) => {
     const { email } = req.body;
@@ -43,8 +46,20 @@ export const savePredictionData = async (req, res) => {
 
 export const getReports = async (req, res) => {
     const id = req.user;
-    const { startDate, endDate } = req.query;
+    const subscription = req.subscription;
+    const findUser = await User.findOne({ _id: id });
+    const org = await Organization.findOne({ _id: findUser.organizationBelongsTo });
+    let { startDate, endDate } = req.query;
     try {
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            res.status(403).json({ errorTitle: "Access Denied", message: ERROR_MSG.FORBIDDEN });
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+            if (endDate > getOlderTimestamp(org.BASIC_LIMIT.pastViewDuration)) {
+                startDate = getOlderTimestamp(org.BASIC_LIMIT.pastViewDuration);
+            }
+        }
+
         const filter = {};
         filter.vesselId = id;
         if (startDate && endDate) {

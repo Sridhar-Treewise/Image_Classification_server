@@ -10,24 +10,7 @@ export const SUBSCRIPTION_MODEL = {
     FREE: "FREE_TRIAL",
     BASIC: "BASIC",
     PRO: "PRO",
-    PREMIUM: "PREMIUM"
-};
-export const SUBSCRIPTION_PLAN_LIMITS = {
-    freePlanLimits: {
-        maxManagers: 1,
-        maxVessels: 1,
-        maxDownloads: 0
-    },
-    basicPlanLimits: {
-        maxManagers: 3,
-        maxVessels: 3,
-        maxDownloads: 10
-    },
-    proPlanLimits: {
-        maxManagers: 7,
-        maxVessels: 5,
-        maxDownloads: 10
-    }
+    CUSTOM: "CUSTOM"
 };
 
 export const DESIGNATION = [
