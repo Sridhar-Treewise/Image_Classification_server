@@ -9,6 +9,7 @@ import { DEFECT_DETECTION, HTTP_HEADER, DOC_TYPE, HTTP_HEADER_IMG } from "../../
 import axios from "axios";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import Report from "../../models/Reports.js";
+import { formatTableData } from "../../../utils/responseData.js";
 
 export const updateProfile = async (req, res) => {
     const { email } = req.body;
@@ -123,7 +124,7 @@ export const generatePredictedImage = (req, res) => {
 
     predicatedImagePromise
         .then(async response => {
-            const results = response.data;
+            const results = formatTableData(response.data);
             const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: updatedData } }, { new: true });
 
             if (!result) {
