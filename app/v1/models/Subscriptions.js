@@ -23,6 +23,9 @@ const subscriptionSchema = new mongoose.Schema({
     transactionId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Transaction"
+    },
+    customerId: {
+        type: String
     }
 });
 
