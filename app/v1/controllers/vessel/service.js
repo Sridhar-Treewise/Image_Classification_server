@@ -10,8 +10,8 @@ import axios from "axios";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import Report from "../../models/Reports.js";
 import Organization from "../../models/Organizations.js";
-
 import { getOlderTimestamp } from "../../../utils/dateUtils.js";
+import { formatTableData } from "../../../utils/responseData.js";
 
 export const updateProfile = async (req, res) => {
     const { email } = req.body;
@@ -138,7 +138,7 @@ export const generatePredictedImage = (req, res) => {
 
     predicatedImagePromise
         .then(async response => {
-            const results = response.data;
+            const results = formatTableData(response.data);
             const result = await User.findOneAndUpdate({ _id: userId }, { $set: { inspectionDetails: updatedData } }, { new: true });
 
             if (!result) {
@@ -184,11 +184,33 @@ export const getVesselInfo = async (req, res) => {
 
 export const updateVesselInfo = async (req, res) => {
     const userId = req.user;
+    const { email, phone, imo_number } = req.body;
     const findVessel = await User.findOne({ _id: userId });
     const findOrg = await User.findOne({ _id: findVessel.officerAdmin });
     const orgDomain = findOrg.email.split('@')[1];
     const vesselDomain = req.body.email.split('@')[1];
     if (orgDomain !== vesselDomain) return res.status(422).json({ message: "Email domain do not match" });
+    const existingUser = await User.findOne({
+        $or: [
+            { email },
+            { phone },
+            { "vesselDetails.imo_number": imo_number }
+        ]
+    });
+    if (existingUser && existingUser._id.toString() !== userId) {
+        let message;
+
+        if (existingUser.email === email) {
+            message = ERROR_MSG.ALREADY_EXISTS;
+        }
+        if (existingUser.phone === phone) {
+            message = ERROR_MSG.PHONE_ALREADY_EXISTS;
+        }
+        if (existingUser.vesselDetails.imo_number === imo_number) {
+            message = ERROR_MSG.IMO_ALREADY_EXISTS;
+        }
+        return res.status(409).json({ message });
+    }
     try {
         const updateData = {
             vesselDetails: req.body,

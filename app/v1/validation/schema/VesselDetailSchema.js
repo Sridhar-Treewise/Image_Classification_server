@@ -47,12 +47,12 @@ export const inspectionImageSchema = Joi.object({
 });
 
 export const vesselDetailsSchema = Joi.object({
-    vessel_name: Joi.string().required(),
+    vessel_name: Joi.string().optional(),
     imo_number: Joi.number().required(),
-    manufacturer: Joi.string().required(),
-    type_of_engine: Joi.string().min(2).required(),
-    vessel_type: Joi.string().required(),
-    cylinder_numbers: Joi.number().max(100).required(),
+    manufacturer: Joi.string().optional(),
+    type_of_engine: Joi.string().min(2).optional(),
+    vessel_type: Joi.string().optional(),
+    cylinder_numbers: Joi.number().max(100).optional(),
     email: Joi.string().email().required(),
     phone: Joi.number().required()
 });
@@ -75,13 +75,15 @@ export const predictedDataSchema = Joi.object({
         Joi.object({
             predictionInfo: Joi.array().items(
                 Joi.object({
+                    ringNo: Joi.optional(),
                     lubricationCondition: Joi.optional(),
                     surfaceCondition: Joi.optional(),
                     depositsCondition: Joi.optional(),
                     breakageCondition: Joi.optional()
                 })
             ).required(),
-            image: Joi.string().base64().required()
+            image: Joi.string().base64().required(),
+            remarks: Joi.string().optional()
         })
     ).required()
 });

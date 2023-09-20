@@ -89,6 +89,23 @@ export const userDetails = async (req, res) => {
 };
 export const updateUser = async (req, res) => {
     const { fullName, email, phone, _id = "" } = req.body;
+    const existingUser = await User.findOne({
+        $or: [
+            { email },
+            { phone }
+        ]
+    });
+    if (existingUser && existingUser._id.toString() !== _id) {
+        let message;
+
+        if (existingUser.email === email) {
+            message = ERROR_MSG.ALREADY_EXISTS;
+        } else if (existingUser.phone === phone) {
+            message = ERROR_MSG.PHONE_ALREADY_EXISTS;
+        }
+
+        return res.status(409).json({ message });
+    }
     try {
         const update = await User.findOneAndUpdate({ _id }, { $set: { fullName, email, phone } }, { new: true });
         if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
