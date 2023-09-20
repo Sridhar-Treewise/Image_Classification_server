@@ -75,6 +75,7 @@ export const predictedDataSchema = Joi.object({
         Joi.object({
             predictionInfo: Joi.array().items(
                 Joi.object({
+                    ringNo: Joi.optional(),
                     lubricationCondition: Joi.optional(),
                     surfaceCondition: Joi.optional(),
                     depositsCondition: Joi.optional(),
