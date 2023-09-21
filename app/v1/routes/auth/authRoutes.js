@@ -1,5 +1,5 @@
 import express from "express";
-import { getAdmins, getOrgs, signIn, signUp, getAdminByOrg, orgRegistration, vesselRegistration } from "../../controllers/auth/authController.js";
+import { getAdmins, getOrgs, signIn, signUp, getAdminByOrg, orgRegistration, vesselRegistration, getPrice } from "../../controllers/auth/authController.js";
 import { signInValidate, signUpValidate, validateDomain, vesselRegistrationValidate, orgRegistrationValidate } from "../../validation/AuthValidator.js";
 
 const router = express.Router();
@@ -11,5 +11,7 @@ router.post("/vessel-registration", vesselRegistrationValidate, vesselRegistrati
 router.post("/org-admins", validateDomain, getAdmins);
 router.get("/org", getOrgs);
 router.post("/admins-by-org", getAdminByOrg);
+router.get("/price", getPrice);
+
 
 export default router;

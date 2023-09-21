@@ -80,6 +80,10 @@ export const getDownloadCount = async (req, res) => {
                 status = false;
             }
         }
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            status = false;
+            download = 0;
+        }
         const data = {
             download,
             status
@@ -88,4 +92,7 @@ export const getDownloadCount = async (req, res) => {
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
+};
+export const choosePlan = async (req, res) => {
+
 };

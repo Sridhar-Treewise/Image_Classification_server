@@ -9,6 +9,7 @@ import Organization from "../../models/Organizations.js";
 import { DESIGNATION, USER_TYPE, SUBSCRIPTION_MODEL } from "../../../common/constants.js";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import { environment } from "../../../config/config.js";
+import { stripe } from "../../../utils/stripe.js";
 
 export const signIn = async (req, res) => {
     const { email, password } = req.body;
@@ -108,7 +109,12 @@ export const orgRegistration = async (req, res) => {
             const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
             createOrg.admins.push(user._id);
             await createOrg.save();
-            const subscription = await Subscription.create({ manager: createOrg.manager, orgCode: createOrg.code, orgId: createOrg._id });
+            const organization = fullName + " " + company_name;
+            const customer = await stripe.customers.create({
+                name: organization,
+                email
+            });
+            const subscription = await Subscription.create({ orgCode: createOrg.code, orgId: createOrg._id, customerId: customer.id });
             user.organizationBelongsTo = createOrg._id;
             user.subscription = subscription._id;
             await user.save();
@@ -333,6 +339,17 @@ export const getAdminByOrg = async (req, res) => {
             // eslint-disable-next-line no-console
             console.log("error \n", error.message);
         }
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+export const getPrice = async (req, res) => {
+    try {
+        const prices = await stripe.prices.list({
+            apiKey: process.env.STRIPE_SECRET_KEY
+        });
+
+        res.status(200).json(prices);
+    } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };

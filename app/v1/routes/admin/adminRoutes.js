@@ -1,5 +1,5 @@
 import express from "express";
-import { dashboardList, dashboardReportImageCount, getSubscriptionCount, getTransactionCount } from "../../controllers/admin/adminController.js";
+import { dashboardList, dashboardReportImageCount, getSubscriptionCount, getTransactionCount, addPrice } from "../../controllers/admin/adminController.js";
 import { orgList, getOrgById, updateOrg } from "../../controllers/admin/orgManagementController.js";
 import { usersList, getUserById, restrictUser, userDetails, updateUser, updatePassword } from "../../controllers/admin/userManagementController.js";
 import { vesselList, getVesselById } from "../../controllers/admin/vesselManagementController.js";
@@ -22,6 +22,7 @@ router.get("/organizations/:id", getOrgById);
 router.put("/organizations", updateOrg);
 router.get("/subscription-count", getSubscriptionCount);
 router.get("/transaction-count", getTransactionCount);
+router.post("/price", addPrice);
 
 
 export default router;

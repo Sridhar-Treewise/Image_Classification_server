@@ -12,6 +12,12 @@ export const SUBSCRIPTION_MODEL = {
     PRO: "PRO",
     CUSTOM: "CUSTOM"
 };
+export const SUBSCRIPTION_AMOUNT = {
+    FREE: 0,
+    BASIC: 100,
+    PRO: 200,
+    CUSTOM: 300
+};
 
 export const DESIGNATION = [
     "CHIEF_OFFICER",
