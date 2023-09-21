@@ -345,33 +345,48 @@ export const getAdminByOrg = async (req, res) => {
 
 export const getPrice = async (req, res) => {
     const { interval = "monthly" } = req.params;
+    const filter = interval === "monthly" ? "month" : "year";
     try {
+        // Use the Stripe API to list products
         const { data: products } = await stripe.products.list({
             apiKey: process.env.STRIPE_SECRET_KEY
         });
-        if (products.length < 1) return res.status(200).json(handleFailedOperation("No products found"));
-        const data = await Promise.all(
-            products.map(async (product) => {
-                const prices = await stripe.prices.list({
-                    apiKey: process.env.STRIPE_SECRET_KEY,
-                    product: product.id,
-                    ...(interval === "monthly"
-                        ? { recurring: { interval: "month" } }
-                        : interval === "yearly"
-                            ? { recurring: { interval: "year" } }
-                            : {})
-                });
-                const price = prices.data[0];
 
-                return {
-                    id: product.id,
-                    name: product.name,
-                    price: price.unit_amount / 100,
-                    priceId: price.id
-                };
-            })
-        );
-        if (data.length < 1) return res.status(200).json(handleFailedOperation("No prices found"));
+        // Find the product by name using lodash
+        const basicProduct = _.find(products, { name: "BASIC" });
+        const proProduct = _.find(products, { name: "PRO" });
+
+        if (!basicProduct || !proProduct) {
+            return res.status(200).json(handleFailedOperation("Products not found"));
+        }
+
+        // Fetch prices for the found products by their IDs
+        const basicPricesResponse = await stripe.prices.list({ product: basicProduct.id });
+        const proPricesResponse = await stripe.prices.list({ product: proProduct.id });
+
+        // Use lodash.get to extract prices from the response
+        const basicPrices = _.get(basicPricesResponse, "data", []);
+        const proPrices = _.get(proPricesResponse, "data", []);
+
+        // Find the price based on the specified interval
+        const basicPrice = _.find(basicPrices, price => price.recurring.interval === filter);
+        const proPrice = _.find(proPrices, price => price.recurring.interval === filter);
+
+        if (!basicPrice || !proPrice) {
+            return res.status(200).json(handleFailedOperation("Prices not found"));
+        }
+        const data = {
+            basic: {
+                price: basicPrice.unit_amount_decimal,
+                prodId: basicProduct.id,
+                priceId: basicPrice.id
+            },
+            pro: {
+                price: proPrice.unit_amount_decimal,
+                prodId: proProduct.id,
+                priceId: proPrice.id
+            }
+        };
         res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
