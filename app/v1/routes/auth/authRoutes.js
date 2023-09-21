@@ -11,7 +11,7 @@ router.post("/vessel-registration", vesselRegistrationValidate, vesselRegistrati
 router.post("/org-admins", validateDomain, getAdmins);
 router.get("/org", getOrgs);
 router.post("/admins-by-org", getAdminByOrg);
-router.get("/price", getPrice);
+router.get("/price/:interval", getPrice);
 
 
 export default router;

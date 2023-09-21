@@ -342,13 +342,37 @@ export const getAdminByOrg = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+
 export const getPrice = async (req, res) => {
+    const { interval = "monthly" } = req.params;
     try {
-        const prices = await stripe.prices.list({
+        const { data: products } = await stripe.products.list({
             apiKey: process.env.STRIPE_SECRET_KEY
         });
+        if (products.length < 1) return res.status(200).json(handleFailedOperation("No products found"));
+        const data = await Promise.all(
+            products.map(async (product) => {
+                const prices = await stripe.prices.list({
+                    apiKey: process.env.STRIPE_SECRET_KEY,
+                    product: product.id,
+                    ...(interval === "monthly"
+                        ? { recurring: { interval: "month" } }
+                        : interval === "yearly"
+                            ? { recurring: { interval: "year" } }
+                            : {})
+                });
+                const price = prices.data[0];
 
-        res.status(200).json(prices);
+                return {
+                    id: product.id,
+                    name: product.name,
+                    price: price.unit_amount / 100,
+                    priceId: price.id
+                };
+            })
+        );
+        if (data.length < 1) return res.status(200).json(handleFailedOperation("No prices found"));
+        res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
