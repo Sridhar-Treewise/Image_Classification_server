@@ -1,6 +1,6 @@
 
 ## Server image classification || SCAV_AI
-
+ Scavenge inspection is an AI based cylinder piston rings detection system. At its core, scavenge inspection harnesses the power of artificial intelligence to meticulously analyze and predict potential problems within the cylinders of ship engine. By combining advanced machine learning algorithms and data, this system enables fleet managers and engineers to stay ahead of the curve in maintenance and diagnostics
 #### Project Requirements setup
 
 - [x] Node.js `v18.12.1 (npm v8.19.2)`
