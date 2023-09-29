@@ -1,5 +1,5 @@
 
-## Project Server image classification || SCAV_AI
+## Server image classification || SCAV_AI
 
 #### Project Requirements setup
 
@@ -9,7 +9,7 @@
 
 
 - [x] npm 
-- [x] code version 1.77.0
+- [x] vs code version 1.77.0
 
 #### Initial setup
 
