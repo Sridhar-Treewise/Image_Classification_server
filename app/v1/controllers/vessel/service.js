@@ -225,13 +225,13 @@ export const exportDocuments = async (req, res) => {
     if (documentType === DOC_TYPE.EXCEL) {
         URL = DEFECT_DETECTION.EXPORT_EXCEL;
     } else if (documentType === DOC_TYPE.PDF) {
-        URL = DEFECT_DETECTION.EXPORT_EXCEL;
+        URL = DEFECT_DETECTION.EXPORT_PDF;
     }
-    const exportDocApi = axios.post(URL, req.body, HTTP_HEADER.headers);
+    const exportDocApi = axios.post(URL, req.body);
     exportDocApi.then(response => {
-        // const contentType = documentType === DOC_TYPE.EXCEL ? 'application/vnd.ms-excel' : 'application/pdf';
-        // res.setHeader('Content-Type', contentType);
-        res.setHeader('Content-Type', 'application/octet-stream');
+        _.forEach(response.headers, (value, key) => {
+            res.setHeader(key, value);
+        })
         res.send(response.data);
     }).catch(error => {
         if (error.response) {
