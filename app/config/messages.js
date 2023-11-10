@@ -1,6 +1,10 @@
 /* eslint-disable camelcase */
 export const ERROR_MSG = {
+    TOKEN_REQUIRED: "Token Required for accessing this resource",
     ALREADY_EXISTS: "Email already exists, please try different email",
+    USER_BLOCKED: "User blocked from accessing resources",
+    TOKEN_EXPIRED: "Token has expired",
+    INVALID_TOKEN: "Invalid token",
     COMPANY_ALREADY_EXISTS: "Company already exists, please try different company name",
     PHONE_ALREADY_EXISTS: "Phone number already exists, please try different phone number",
     IMO_ALREADY_EXISTS: "IMO number already exists, please try different imo number",
