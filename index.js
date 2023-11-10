@@ -18,11 +18,8 @@ const environment = process.env.NODE_ENV || "development";
 // Caching
 // clustering
 // connection pool
-// validate, body, query, params [+]
-// success failed operation [+]
-// permission for admin, organization, vessel [+]
-// proper commenting
 // TODO +++++++++++++++++++++++++++++
+
 const envFile = `.env.${environment}`;
 dotenv.config({ path: envFile });
 
