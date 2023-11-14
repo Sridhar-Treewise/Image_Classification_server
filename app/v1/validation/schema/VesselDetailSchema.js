@@ -83,7 +83,7 @@ export const predictedDataSchema = Joi.object({
                 })
             ).required(),
             image: Joi.string().base64().required(),
-            remarks: Joi.string().optional()
+            remarks: Joi.optional()
         })
     ).required()
 });
