@@ -9,23 +9,23 @@ import { ERROR_MSG } from "../config/messages.js";
 import { handleFailedOperation } from "./apiOperation.js";
 
 const config = process.env;
-// TODO :- Add -> check blocked no blocked users
+// TODO :- Add -> check blocked non blocked users
 export const verifyToken = async (req, res, next) => {
     try {
         let token = req.query.token || req.headers.authorization;
-        if (!token) return res.status(401).json({ message: "Token Required for accessing this resource", errorCode: ERROR_CODE.TOKEN_REQUIRED });
-        if (!token.length) return res.status(403).json({ message: "Invalid token", errorCode: ERROR_CODE.INVALID_TOKEN });
+        if (!token) return res.status(401).json({ message: ERROR_MSG.TOKEN_REQUIRED, errorCode: ERROR_CODE.TOKEN_REQUIRED });
+        if (!token.length) return res.status(403).json({ message: ERROR_MSG.INVALID_TOKEN, errorCode: ERROR_CODE.INVALID_TOKEN });
         token = token.split(" ")[1];
         const decodedToken = jwt.verify(token, config.JWT_SECRET);
         if (decodedToken.exp && decodedToken.exp < Date.now() / 1000) {
             return res
                 .status(401)
-                .json({ message: "Token has expired", errorCode: ERROR_CODE.JWT_TOKEN_EXPIRED });
+                .json({ message: ERROR_MSG.TOKEN_EXPIRED, errorCode: ERROR_CODE.JWT_TOKEN_EXPIRED });
         }
         const { userId = "", userType = "" } = decodedToken;
         const user = await User.findOne({ _id: userId }).populate("subscription");
         if (!user) return res.status(404).json({ message: ERROR_MSG.USER_NOT });
-        if (!user.status) return res.status(401).json({ message: "User blocked from accessing resources" });
+        if (!user.status) return res.status(401).json({ message: ERROR_MSG.USER_BLOCKED });
         req.user = userId;
         req.userType = userType;
         req.subscription = user.subscription;
@@ -95,13 +95,3 @@ export const checkSubscriptionValidity = async (req, res, next) => {
     }
 };
 
-
-export const setCaching = (req, res, next) => {
-    const period = 60 * 5;
-    if (req.method === "GET" && req.url !== "/api/v1/ping") {
-        res.set("Cache-Control", `public, max-age=${period}`);
-    } else {
-        res.set("Cache-control", "no-store");
-    }
-    next();
-};

@@ -8,7 +8,7 @@ import databaseConfig from "./app/config/database.js";
 import { adminRegister } from "./app/v1/controllers/auth/authController.js";
 import { connectToDatabase } from "./app/config/connection.js";
 import { errorHandler, notFoundHandler } from "./app/common/handler.js";
-import { setCaching } from "./app/utils/middleware.js";
+
 
 const app = express();
 const environment = process.env.NODE_ENV || "development";
@@ -18,11 +18,8 @@ const environment = process.env.NODE_ENV || "development";
 // Caching
 // clustering
 // connection pool
-// validate, body, query, params [+]
-// success failed operation [+]
-// permission for admin, organization, vessel [+]
-// proper commenting
 // TODO +++++++++++++++++++++++++++++
+
 const envFile = `.env.${environment}`;
 dotenv.config({ path: envFile });
 
@@ -34,7 +31,7 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false }));
-app.use(setCaching);
+// app.use(setCaching);
 
 // Routes
 app.use("/api/v1", router);
