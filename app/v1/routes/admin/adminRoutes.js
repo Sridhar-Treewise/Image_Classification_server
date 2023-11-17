@@ -1,5 +1,5 @@
 import express from "express";
-import { dashboardList, dashboardReportImageCount, getSubscriptionCount, getTransactionCount, addPrice } from "../../controllers/admin/adminController.js";
+import { dashboardSubscription, dashboardUsersList, dashboardReportImageCount, getSubscriptionCount, getTransactionCount, addPrice } from "../../controllers/admin/adminController.js";
 import { orgList, getOrgById, updateOrg } from "../../controllers/admin/orgManagementController.js";
 import { usersList, getUserById, restrictUser, userDetails, updateUser, updatePassword } from "../../controllers/admin/userManagementController.js";
 import { vesselList, getVesselById } from "../../controllers/admin/vesselManagementController.js";
@@ -9,7 +9,8 @@ const router = express.Router();
 
 router.get("/users/:id", getUserById);
 router.get("/users-all", dashboardUserValidation, usersList);
-router.get("/dashboard", dashboardList);
+router.get("/dashboard-subscription", dashboardSubscription);
+router.get("/dashboard-users", dashboardUsersList);
 router.get("/dashboard-count", dashboardReportImageCount);
 router.post("/restrict-user", restrictUser);
 router.get("/user-details", userDetails);
