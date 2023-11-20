@@ -12,9 +12,10 @@ export const dashboardSubscription = async (req, res) => {
         const freeTrail = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.FREE });
         const basic = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.BASIC });
         const pro = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.PRO });
-        const premium = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.PREMIUM });
+        const premium = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.CUSTOM });
         const series = [freeTrail.length, basic.length, pro.length, premium.length];
-        const labels = ["freeTrail", "basic", "pro", "premium"];
+        const labels = Object.values(SUBSCRIPTION_MODEL);
+
         const data = {
             organizations,
             series,
