@@ -15,11 +15,14 @@ export const dashboardSubscription = async (req, res) => {
         const premium = await Subscription.distinct("orgCode", { plan: SUBSCRIPTION_MODEL.CUSTOM });
         const series = [freeTrail.length, basic.length, pro.length, premium.length];
         const labels = Object.values(SUBSCRIPTION_MODEL);
+        const dataList = {
+            series,
+            labels
+        };
 
         const data = {
             organizations,
-            series,
-            labels
+            dataList
         };
         res.status(200).json({ data });
     } catch (error) {
@@ -37,10 +40,13 @@ export const dashboardUsersList = async (req, res) => {
         const fleetManagers = await User.countDocuments(condClause);
         const series = [vessels, fleetManagers];
         const labels = ["Fleet Managers", "Vessels"];
-        const data = {
-            totalUsers,
+        const dataList = {
             series,
             labels
+        };
+        const data = {
+            totalUsers,
+            dataList
         };
         res.status(200).json({ data });
     } catch (error) {
