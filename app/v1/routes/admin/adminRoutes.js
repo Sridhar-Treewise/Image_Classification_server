@@ -11,7 +11,7 @@ router.get("/users/:id", getUserById);
 router.get("/users-all", dashboardUserValidation, usersList);
 router.get("/dashboard-subscription", dashboardSubscription);
 router.get("/dashboard-users", dashboardUsersList);
-router.get("/dashboard-count", dashboardReportImageCount);
+router.get("/dashboard-report", dashboardReportImageCount);
 router.post("/restrict-user", restrictUser);
 router.get("/user-details", userDetails);
 router.put("/update-user", userDetailsValidation, updateUser);
