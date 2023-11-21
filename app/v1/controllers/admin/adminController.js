@@ -146,10 +146,10 @@ export const getTransactionCount = async (req, res) => {
         const totalRevenueThirtyDaysAgoValue = totalRevenueThirtyDaysAgo.length > 0 ? totalRevenueThirtyDaysAgo[0].total : 0;
 
         const increase = totalRevenueLastThirtyDaysValue - totalRevenueThirtyDaysAgoValue;
-        const percentageIncrease = totalRevenueThirtyDaysAgoValue !== 0 ? (Math.abs(increase) / totalRevenueThirtyDaysAgoValue) * 100 : 0;
+        const percentageIncrease = (totalRevenueThirtyDaysAgoValue !== 0 ? (Math.abs(increase) / totalRevenueThirtyDaysAgoValue) * 100 : 0).toFixed(1);
 
         const data = {
-            price: totalRevenueLastThirtyDaysValue,
+            value: totalRevenueLastThirtyDaysValue,
             percentage: percentageIncrease
         };
 
