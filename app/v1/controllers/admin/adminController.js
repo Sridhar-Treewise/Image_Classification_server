@@ -108,8 +108,9 @@ export const getSubscriptionCount = async (req, res) => {
 
 export const getTransactionCount = async (req, res) => {
     try {
+        const numberOfDays = req.query.numberOfDays || 30;
         const currentTimestamp = Date.now();
-        const thirtyDaysAgoTimestamp = currentTimestamp - 30 * 24 * 60 * 60 * 1000;
+        const thirtyDaysAgoTimestamp = currentTimestamp - numberOfDays * 24 * 60 * 60 * 1000;
 
         const totalRevenueLastThirtyDays = await Transaction.aggregate([
             {
