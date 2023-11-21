@@ -1,5 +1,6 @@
 
 import User from "../../models/User.js";
+import Transaction from "../../models/Transactions.js";
 import Report from "../../models/Reports.js";
 import { ERROR_MSG } from "../../../config/messages.js";
 import Organization from "../../models/Organizations.js";
@@ -104,15 +105,54 @@ export const getSubscriptionCount = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+
 export const getTransactionCount = async (req, res) => {
     try {
-        const totalRevenue = 0;
-        const totalTransaction = 0;
+        const currentTimestamp = Date.now();
+        const thirtyDaysAgoTimestamp = currentTimestamp - 30 * 24 * 60 * 60 * 1000;
+
+        const totalRevenueLastThirtyDays = await Transaction.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: thirtyDaysAgoTimestamp, $lte: currentTimestamp },
+                    status: "success"
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$amount" }
+                }
+            }
+        ]);
+
+        const totalRevenueThirtyDaysAgo = await Transaction.aggregate([
+            {
+                $match: {
+                    createdAt: { $lt: thirtyDaysAgoTimestamp },
+                    status: "success"
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    total: { $sum: "$amount" }
+                }
+            }
+        ]);
+
+
+        const totalRevenueLastThirtyDaysValue = totalRevenueLastThirtyDays.length > 0 ? totalRevenueLastThirtyDays[0].total : 0;
+        const totalRevenueThirtyDaysAgoValue = totalRevenueThirtyDaysAgo.length > 0 ? totalRevenueThirtyDaysAgo[0].total : 0;
+
+        const increase = totalRevenueLastThirtyDaysValue - totalRevenueThirtyDaysAgoValue;
+        const percentageIncrease = totalRevenueThirtyDaysAgoValue !== 0 ? (Math.abs(increase) / totalRevenueThirtyDaysAgoValue) * 100 : 0;
 
         const data = {
-            totalRevenue,
-            totalTransaction
+            price: totalRevenueLastThirtyDaysValue,
+            percentage: percentageIncrease
         };
+
         res.status(200).json({ data });
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
