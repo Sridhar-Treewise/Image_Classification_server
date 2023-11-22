@@ -105,7 +105,7 @@ export const getSubscriptionCount = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
-// TOD->Params Validation
+// TODO ->Params Validation
 export const getTransactionCount = async (req, res) => {
     try {
         const numberOfDays = req.query.days || 30;
