@@ -9,7 +9,7 @@ import { ERROR_MSG } from "../config/messages.js";
 import { handleFailedOperation } from "./apiOperation.js";
 
 const config = process.env;
-// TODO :- Add -> check blocked non blocked users
+
 export const verifyToken = async (req, res, next) => {
     try {
         let token = req.query.token || req.headers.authorization;

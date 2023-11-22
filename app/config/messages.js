@@ -32,7 +32,8 @@ export const ERROR_MSG = {
     INCORRECT_PSW: "Incorrect Password",
     PASSWORD_MISMATCH: "Passwords don't match",
     SUBSCRIPTION_LIMIT_EXCEEDED: " Subscription limit is exceeded",
-    SUBSCRIPTION_EXPIRED: " Subscription Plan expired"
+    SUBSCRIPTION_EXPIRED: " Subscription Plan expired",
+    INVALID_INPUT: "Invalid Input"
 
 };
 

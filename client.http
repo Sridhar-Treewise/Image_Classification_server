@@ -1,4 +1,4 @@
-post http://localhost:8000/api/v1/auth/signIn
+post http://localhost:8000/api/v1/no-auth/sign-in
 Content-Type:  application/json
 
 {
@@ -7,7 +7,7 @@ Content-Type:  application/json
 }
 
 ###
-post http://localhost:8000/api/v1/auth/signUp
+post http://localhost:8000/api/v1/no-auth/sign-up
 Content-Type:  application/json
 
 {
