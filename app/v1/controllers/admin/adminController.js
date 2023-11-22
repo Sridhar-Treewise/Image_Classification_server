@@ -105,16 +105,21 @@ export const getSubscriptionCount = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
-
+// TODO ->Params Validation
 export const getTransactionCount = async (req, res) => {
     try {
+        const numberOfDays = req.query.days || 30;
+        const days = parseInt(numberOfDays);
+        if (isNaN(days)) {
+            return res.status(422).json({ message: ERROR_MSG.INVALID_INPUT });
+        }
         const currentTimestamp = Date.now();
-        const thirtyDaysAgoTimestamp = currentTimestamp - 30 * 24 * 60 * 60 * 1000;
+        const nDaysAgoTimestamp = currentTimestamp - days * 24 * 60 * 60 * 1000;
 
-        const totalRevenueLastThirtyDays = await Transaction.aggregate([
+        const totalRevenueLastNDays = await Transaction.aggregate([
             {
                 $match: {
-                    createdAt: { $gte: thirtyDaysAgoTimestamp, $lte: currentTimestamp },
+                    createdAt: { $gte: nDaysAgoTimestamp, $lte: currentTimestamp },
                     status: "success"
                 }
             },
@@ -126,10 +131,10 @@ export const getTransactionCount = async (req, res) => {
             }
         ]);
 
-        const totalRevenueThirtyDaysAgo = await Transaction.aggregate([
+        const totalRevenueNDaysAgo = await Transaction.aggregate([
             {
                 $match: {
-                    createdAt: { $lt: thirtyDaysAgoTimestamp },
+                    createdAt: { $lt: nDaysAgoTimestamp },
                     status: "success"
                 }
             },
@@ -140,18 +145,22 @@ export const getTransactionCount = async (req, res) => {
                 }
             }
         ]);
-
-
-        const totalRevenueLastThirtyDaysValue = totalRevenueLastThirtyDays.length > 0 ? totalRevenueLastThirtyDays[0].total : 0;
-        const totalRevenueThirtyDaysAgoValue = totalRevenueThirtyDaysAgo.length > 0 ? totalRevenueThirtyDaysAgo[0].total : 0;
-
-        const increase = totalRevenueLastThirtyDaysValue - totalRevenueThirtyDaysAgoValue;
-        const percentageIncrease = (totalRevenueThirtyDaysAgoValue !== 0 ? (Math.abs(increase) / totalRevenueThirtyDaysAgoValue) * 100 : 0).toFixed(1);
-
-        const data = {
-            value: totalRevenueLastThirtyDaysValue,
-            percentage: percentageIncrease
-        };
+        const totalRevenueLastNDaysValue = totalRevenueLastNDays.length > 0 ? totalRevenueLastNDays[0].total : 0;
+        const totalRevenueNDaysAgoValue = totalRevenueNDaysAgo.length > 0 ? totalRevenueNDaysAgo[0].total : 0;
+        const increase = totalRevenueLastNDaysValue - totalRevenueNDaysAgoValue;
+        const percentageIncrease = (totalRevenueNDaysAgoValue !== 0 ? (Math.abs(increase) / totalRevenueNDaysAgoValue) * 100 : 0).toFixed(1);
+        let data = {};
+        if (totalRevenueLastNDaysValue === 0) {
+            data = {
+                value: totalRevenueLastNDaysValue,
+                percentage: 0
+            };
+        } else {
+            data = {
+                value: totalRevenueLastNDaysValue,
+                percentage: percentageIncrease
+            };
+        }
 
         res.status(200).json({ data });
     } catch (error) {
