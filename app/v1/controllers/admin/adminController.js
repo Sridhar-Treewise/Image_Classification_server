@@ -109,9 +109,9 @@ export const getSubscriptionCount = async (req, res) => {
 export const getTransactionCount = async (req, res) => {
     try {
         const numberOfDays = req.query.days || 30;
-        const days = parseInt(numberOfDays, 10);
+        const days = parseInt(numberOfDays);
         if (isNaN(days)) {
-            res.status(422).json({ message: ERROR_MSG.INVALID_INPUT });
+            return res.status(422).json({ message: ERROR_MSG.INVALID_INPUT });
         }
         const currentTimestamp = Date.now();
         const nDaysAgoTimestamp = currentTimestamp - days * 24 * 60 * 60 * 1000;
