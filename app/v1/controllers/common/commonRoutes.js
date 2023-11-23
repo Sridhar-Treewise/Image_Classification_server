@@ -93,6 +93,4 @@ export const getDownloadCount = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
-export const choosePlan = async (req, res) => {
 
-};

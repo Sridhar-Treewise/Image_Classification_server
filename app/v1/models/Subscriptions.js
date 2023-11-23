@@ -24,6 +24,6 @@ const subscriptionSchema = new mongoose.Schema({
     }
 });
 
-const Transaction = mongoose.model("Subscription", subscriptionSchema);
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
 
-export default Transaction;
+export default Subscription;

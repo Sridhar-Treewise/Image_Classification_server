@@ -7,6 +7,8 @@ import Organization from "../../models/Organizations.js";
 import { ERROR_MSG } from "../../../config/messages.js";
 import { SUBSCRIPTION_MODEL } from "../../../common/constants.js";
 import mongoose from "mongoose";
+import Subscription from "../../models/Subscriptions.js";
+import { stripe } from "../../../utils/stripe.js";
 export const vesselList = async (req, res) => {
     const id = req.user;
     try {
@@ -179,6 +181,41 @@ export const deleteVessel = async (req, res) => {
         const update = await User.deleteOne({ _id: vesselId });
         if (!update) return res.status(404).send({ message: ERROR_MSG.UPDATE_FAILED });
         res.status(200).json({ message: " Vessel Removed Successfully" });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+
+export const choosePlan = async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.user });
+        if (!user.subscription) return res.status(404).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: ERROR_MSG.USER_NOT });
+        // TODO check whether he has planning
+        // if customer already have plan:-> need to discuss of upgrade subscription
+        const subs = await Subscription.findOne({ _id: user.subscription._id });
+        if (!subs.customerId) return res.status(400).json({ errorTitle: "Error: Unable to process request", message: "Stripe Customer ID not found in the records. Please provide a valid customer ID" });
+
+
+        // eslint-disable-next-line no-unused-vars
+        const session = await stripe.checkout.sessions.create({
+            mode: "subscription",
+            payment_method_types: ["card"],
+            line_items: [
+                {
+                    price: req.body.priceId,
+                    quantity: 1
+                }
+            ],
+            success_url: process.env.URL_PAYMENT_SUCCESS,
+            cancel_url: process.env.URL_PAYMENT_CANCEL,
+            customer: subs.customerId
+        }, {
+            apiKey: process.env.STRIPE_SECRET_KEY
+        });
+        res.status(200).json({ redirection: true, ...session });
+        // TODO  handle subscribed or not
+        // if subscribed update corresponding details
+        // Add failed and success transaction to our database
     } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
