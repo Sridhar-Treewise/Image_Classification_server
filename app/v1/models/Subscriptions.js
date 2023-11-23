@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 import { SUBSCRIPTION_MODEL } from "../../common/constants.js";
 
 const subscriptionSchema = new mongoose.Schema({
-    manager: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true
-    },
     orgCode: {
         type: String,
         required: true
@@ -29,6 +24,6 @@ const subscriptionSchema = new mongoose.Schema({
     }
 });
 
-const Transaction = mongoose.model("Subscription", subscriptionSchema);
+const Subscription = mongoose.model("Subscription", subscriptionSchema);
 
-export default Transaction;
+export default Subscription;

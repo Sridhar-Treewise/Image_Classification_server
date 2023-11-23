@@ -33,3 +33,13 @@ export const fromEpoch = (epoch) => {
 export const formatDate = (date, format = DATE_TIME_FORMAT) => {
     return date ? moment(date).format(format) : null;
 };
+
+
+export function getOlderTimestamp(days) {
+    const date = new Date();
+    // const currTimeStamp = moment(date).unix();
+    const olderDate = moment(date).subtract(days, "days");
+    // console.log(olderDate);
+    return olderDate.unix();
+}
+

@@ -1,6 +1,8 @@
 import { ERROR_MSG } from "../../../config/messages.js";
 import User from "../../models/User.js";
-import { USER_TYPE } from "../../../common/constants.js";
+import { USER_TYPE, SUBSCRIPTION_MODEL } from "../../../common/constants.js";
+import Organization from "../../models/Organizations.js";
+
 
 export const getProfileDetails = async (req, res) => {
     const id = req.user || "";
@@ -63,3 +65,32 @@ export const updateProfile = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+export const getDownloadCount = async (req, res) => {
+    try {
+        let download;
+        let status = true;
+        const id = req.user;
+        const subscription = req.user;
+        const user = await Organization.findOne({ manager: id });
+        if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+            const count = user.BASIC_LIMIT.maxDownloads - 1;
+            const updatedCount = await Organization.findOneAndUpdate({ _id: user._id }, { $set: { "BASIC_LIMIT.maxDownloads": count } }, { new: true });
+            download = updatedCount.BASIC_LIMIT.maxDownloads;
+            if (download === 0) {
+                status = false;
+            }
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            status = false;
+            download = 0;
+        }
+        const data = {
+            download,
+            status
+        };
+        return res.status(200).json({ data });
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+

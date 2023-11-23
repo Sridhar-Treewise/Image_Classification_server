@@ -6,9 +6,10 @@ import Subscription from "../../models/Subscriptions.js";
 import _ from "lodash";
 import { ERROR_MSG } from "../../../config/messages.js";
 import Organization from "../../models/Organizations.js";
-import { DESIGNATION, USER_TYPE } from "../../../common/constants.js";
+import { DESIGNATION, USER_TYPE, SUBSCRIPTION_MODEL } from "../../../common/constants.js";
 import { handleFailedOperation } from "../../../utils/apiOperation.js";
 import { environment } from "../../../config/config.js";
+import { stripe } from "../../../utils/stripe.js";
 
 export const signIn = async (req, res) => {
     const { email, password } = req.body;
@@ -92,6 +93,7 @@ export const signUp = async (req, res) => {
 export const orgRegistration = async (req, res) => {
     const { company_name, fullName, isNewOrg, email, phone, password, confirmPassword } = req.body;
     const domain = email.split("@")[1];
+    let count;
     try {
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
@@ -107,7 +109,12 @@ export const orgRegistration = async (req, res) => {
             const createOrg = await Organization.create({ domain, code, manager: user._id, company_name });
             createOrg.admins.push(user._id);
             await createOrg.save();
-            const subscription = await Subscription.create({ manager: createOrg.manager, orgCode: createOrg.code, orgId: createOrg._id });
+            const organization = fullName + " " + company_name;
+            const customer = await stripe.customers.create({
+                name: organization,
+                email
+            });
+            const subscription = await Subscription.create({ orgCode: createOrg.code, orgId: createOrg._id, customerId: customer.id });
             user.organizationBelongsTo = createOrg._id;
             user.subscription = subscription._id;
             await user.save();
@@ -116,6 +123,24 @@ export const orgRegistration = async (req, res) => {
             res.status(201).json({ token });
         }
         if (!isNewOrg) {
+            const userId = company_name;
+            const isManagerLimit = await Organization.findOne({ _id: userId });
+            const subscription = await Subscription.findOne({ orgId: userId });
+            if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+                if (isManagerLimit.FREE_TRIAL_LIMIT.maxManagers === 0) {
+                    return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+                }
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+                if (isManagerLimit.BASIC_LIMIT.maxManagers === 0) {
+                    return res.status(200).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+                }
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+                if (isManagerLimit.PRO_LIMIT.maxManagers === 0) {
+                    return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+                }
+            }
             const hashedPassword = await bcrypt.hash(password, 10);
             const user = await User.create({ userType: USER_TYPE[1], fullName, email, phone, password: hashedPassword, approvedStatus: true, designation: DESIGNATION[1] });
             const findOrg = await Organization.findOne({ _id: company_name });
@@ -127,6 +152,18 @@ export const orgRegistration = async (req, res) => {
             user.subscription = findAdmin._id;
             await user.save();
             if (!user) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+            if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+                count = isManagerLimit.FREE_TRIAL_LIMIT.maxManagers - 1;
+                await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "FREE_TRIAL_LIMIT.maxManagers": count } }, { new: true });
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+                count = isManagerLimit.BASIC_LIMIT.maxManagers - 1;
+                await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "BASIC_LIMIT.maxManagers": count } }, { new: true });
+            }
+            if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+                count = isManagerLimit.PRO_LIMIT.maxManagers - 1;
+                await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "PRO_LIMIT.maxManagers": count } }, { new: true });
+            }
             const token = jwt.sign({ userId: user._id, userType: USER_TYPE[1] }, process.env.JWT_SECRET, { expiresIn: "7d" });
             res.status(201).json({ token });
         }
@@ -140,7 +177,26 @@ export const orgRegistration = async (req, res) => {
 };
 export const vesselRegistration = async (req, res) => {
     const { company_name, fullName, email, phone, password, confirmPassword, vessel_name, imo_number, cylinder_numbers, officerAdmin } = req.body;
+    let count;
     try {
+        const userId = company_name;
+        const isManagerLimit = await Organization.findOne({ _id: userId });
+        const subscription = await Subscription.findOne({ orgId: userId });
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            if (isManagerLimit.FREE_TRIAL_LIMIT.maxVessels === 0) {
+                return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+            }
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+            if (isManagerLimit.BASIC_LIMIT.maxVessels === 0) {
+                return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+            }
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+            if (isManagerLimit.PRO_LIMIT.maxVessels === 0) {
+                return res.status(403).json(handleFailedOperation(ERROR_MSG.SUBSCRIPTION_LIMIT_EXCEEDED));
+            }
+        }
         const isExists = await User.findOne({ email });
         if (isExists) return res.status(409).json({ message: ERROR_MSG.ALREADY_EXISTS });
         const isPhoneExists = await User.findOne({ phone });
@@ -171,6 +227,18 @@ export const vesselRegistration = async (req, res) => {
                 inspectionDetails: { cylinder_numbers }
             });
         if (!result) return res.status(400).json({ message: ERROR_MSG.PROFILE_NOT });
+        if (subscription.plan === SUBSCRIPTION_MODEL.FREE) {
+            count = isManagerLimit.FREE_TRIAL_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "FREE_TRIAL_LIMIT.maxVessels": count } }, { new: true });
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.BASIC) {
+            count = isManagerLimit.BASIC_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "BASIC_LIMIT.maxVessels": count } }, { new: true });
+        }
+        if (subscription.plan === SUBSCRIPTION_MODEL.PRO) {
+            count = isManagerLimit.PRO_LIMIT.maxVessels - 1;
+            await Organization.findOneAndUpdate({ _id: isManagerLimit._id }, { $set: { "PRO_LIMIT.maxVessels": count } }, { new: true });
+        }
         const token = jwt.sign({ userId: result._id, userType: USER_TYPE[0] }, process.env.JWT_SECRET, { expiresIn: "7d" });
         res.status(201).json({ token });
     } catch (error) {
@@ -271,6 +339,56 @@ export const getAdminByOrg = async (req, res) => {
             // eslint-disable-next-line no-console
             console.log("error \n", error.message);
         }
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+
+export const getPrice = async (req, res) => {
+    const { interval = "monthly" } = req.params;
+    const filter = interval === "monthly" ? "month" : "year";
+    try {
+        // Use the Stripe API to list products
+        const { data: products } = await stripe.products.list({
+            apiKey: process.env.STRIPE_SECRET_KEY
+        });
+
+        // Find the product by name using lodash
+        const basicProduct = _.find(products, { name: "BASIC" });
+        const proProduct = _.find(products, { name: "PRO" });
+
+        if (!basicProduct || !proProduct) {
+            return res.status(200).json(handleFailedOperation("Products not found"));
+        }
+
+        // Fetch prices for the found products by their IDs
+        const basicPricesResponse = await stripe.prices.list({ product: basicProduct.id });
+        const proPricesResponse = await stripe.prices.list({ product: proProduct.id });
+
+        // Use lodash.get to extract prices from the response
+        const basicPrices = _.get(basicPricesResponse, "data", []);
+        const proPrices = _.get(proPricesResponse, "data", []);
+
+        // Find the price based on the specified interval
+        const basicPrice = _.find(basicPrices, price => price.recurring.interval === filter);
+        const proPrice = _.find(proPrices, price => price.recurring.interval === filter);
+
+        if (!basicPrice || !proPrice) {
+            return res.status(200).json(handleFailedOperation("Prices not found"));
+        }
+        const data = {
+            basic: {
+                price: basicPrice.unit_amount_decimal,
+                prodId: basicProduct.id,
+                priceId: basicPrice.id
+            },
+            pro: {
+                price: proPrice.unit_amount_decimal,
+                prodId: proProduct.id,
+                priceId: proPrice.id
+            }
+        };
+        res.status(200).json({ data });
+    } catch (error) {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };

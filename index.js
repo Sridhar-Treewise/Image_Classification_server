@@ -8,6 +8,7 @@ import databaseConfig from "./app/config/database.js";
 import { adminRegister } from "./app/v1/controllers/auth/authController.js";
 import { connectToDatabase } from "./app/config/connection.js";
 import { errorHandler, notFoundHandler } from "./app/common/handler.js";
+import { handleStripeWebHooks } from "./app/v1/strip/stripRouter.js";
 
 
 const app = express();
@@ -36,6 +37,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.use("/api/v1", router);
+app.post("/webhooks", handleStripeWebHooks);
 
 if (environment === "development") {
   app.post("/create", adminRegister);

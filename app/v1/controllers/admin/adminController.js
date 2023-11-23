@@ -5,7 +5,8 @@ import Report from "../../models/Reports.js";
 import { ERROR_MSG } from "../../../config/messages.js";
 import Organization from "../../models/Organizations.js";
 import Subscription from "../../models/Subscriptions.js";
-import { SUBSCRIPTION_MODEL } from "../../../common/constants.js";
+import { SUBSCRIPTION_MODEL, SUBSCRIPTION_AMOUNT } from "../../../common/constants.js";
+import { stripe } from "../../../utils/stripe.js";
 
 export const dashboardSubscription = async (req, res) => {
     try {
@@ -167,4 +168,29 @@ export const getTransactionCount = async (req, res) => {
         res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
     }
 };
+export const addPrice = async (req, res) => {
+    const { productId, interval, plan } = req.body;
+    try {
+        let amount;
+        if (plan.toUpperCase() === SUBSCRIPTION_MODEL.BASIC) {
+            amount = SUBSCRIPTION_AMOUNT.BASIC;
+        }
+        if (plan.toUpperCase() === SUBSCRIPTION_MODEL.PRO) {
+            amount = SUBSCRIPTION_AMOUNT.PRO;
+        }
+        if (plan.toUpperCase() === SUBSCRIPTION_MODEL.CUSTOM) {
+            amount = SUBSCRIPTION_AMOUNT.CUSTOM;
+        }
+        const price = await stripe.prices.create({
+            unit_amount: amount,
+            currency: "usd",
+            recurring: { interval },
+            product: productId
+        });
+        res.status(200).json(price);
+    } catch (error) {
+        res.status(500).json({ errorTitle: ERROR_MSG.SOMETHING_WENT, message: error.message });
+    }
+};
+
 

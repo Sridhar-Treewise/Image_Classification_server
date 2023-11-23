@@ -8,3 +8,4 @@ export const handleSuccessOperation = (jsonData = {}) => {
 export const handleFailedOperation = (errorDescription = "Unknown error occurred", title = "") => {
     return { data: null, result: API_RESULT_CODE.FAILURE, errorDescription, title };
 };
+

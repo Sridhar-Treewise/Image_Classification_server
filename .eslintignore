@@ -1,2 +1,3 @@
 *.test.js
 .eslintsrc.cjs
+.eslintrc.cjs

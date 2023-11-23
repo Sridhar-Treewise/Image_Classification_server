@@ -31,6 +31,8 @@ export const ERROR_MSG = {
     EMAIL_VESSEL_EXISTS: "Email or Vessel Name Already Exists",
     INCORRECT_PSW: "Incorrect Password",
     PASSWORD_MISMATCH: "Passwords don't match",
+    SUBSCRIPTION_LIMIT_EXCEEDED: " Subscription limit is exceeded",
+    SUBSCRIPTION_EXPIRED: " Subscription Plan expired",
     INVALID_INPUT: "Invalid Input"
 
 };
